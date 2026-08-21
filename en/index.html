@@ -188,6 +188,21 @@
   .quiz-card.running .cp-gl2{transform-origin:100% 0;animation:cp-a 1.15s cubic-bezier(.45,0,.55,1) infinite alternate;animation-delay:-.85s;}
   .quiz-card.running .cp-ga .cp-chalk{animation:cp-puff 1.15s ease-out infinite;}
   .quiz-card.running .cp-gb .cp-chalk{animation:cp-puff 1.15s ease-out infinite;animation-delay:-.55s;}
+  .beta-stage{position:relative;aspect-ratio:16/9;min-height:280px;border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-top:22px;background-size:cover;background-position:center;}
+  .beta-stage::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,15,19,.22),rgba(14,15,19,.55));}
+  .beta-stage.shake{animation:bshake .4s ease;}
+  @keyframes bshake{25%{transform:translateX(-6px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+  .beta-spot{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:3px solid var(--c3);background:rgba(230,232,230,.14);cursor:pointer;animation:bpulse 1s ease-in-out infinite;z-index:2;}
+  .beta-spot:nth-of-type(2){animation-delay:.33s}
+  .beta-spot:nth-of-type(3){animation-delay:.66s}
+  @keyframes bpulse{0%,100%{box-shadow:0 0 0 0 rgba(214,169,79,.55)}50%{box-shadow:0 0 0 12px rgba(214,169,79,0)}}
+  .beta-spot:hover{background:rgba(230,232,230,.3);}
+  .beta-spot.ok{border-color:#7fb069;background:rgba(127,176,105,.35);animation:none;}
+  .beta-spot.bad{border-color:var(--c2);background:rgba(198,90,69,.4);animation:none;}
+  .beta-climber{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--c2);border:2px solid #fff;box-shadow:0 0 10px rgba(198,90,69,.8);z-index:3;transition:top .45s cubic-bezier(.34,1.3,.64,1),left .45s cubic-bezier(.34,1.3,.64,1);}
+  .beta-climber.fall{transition:top .85s cubic-bezier(.55,0,1,.45),transform .85s ease-in;transform:rotate(160deg);}
+  .beta-meta{display:flex;gap:18px;align-items:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.75rem;opacity:.9;flex-wrap:wrap;}
+  .beta-meta .btn{margin-left:auto;}
   .cp-climber{
     position:absolute;left:50%;bottom:0;width:34px;height:46px;z-index:3;
     transform:translate(-50%,40%);
@@ -938,7 +953,7 @@
         <a href="#bolum-3">III · Safety</a>
         <a href="#bolum-4">IV · Progression</a>
       </div>
-      <a class="lang-btn" href="../" lang="tr">TR</a>
+      <a class="lang-btn" href="../ data-file="../index.html" lang="tr">TR</a>
       <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -2123,6 +2138,26 @@
         </div>
       </div>
     </section>
+    <section id="beta" class="section section--tint" data-ch="4">
+      <span class="ghost" aria-hidden="true">21</span>
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">21 — BETA CHALLENGE</span>
+          <h2>Send It in One Click</h2>
+          <p>A crux moment: three holds blink on the wall. Click the right move and the climber steps up; pick wrong and you take the 2-second ride.</p>
+        </div>
+        <div class="beta-stage reveal" id="betaStage" style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Climbing_wall_20211103_145408.jpg?width=1600')">
+          <div class="beta-climber" id="betaClimber"></div>
+        </div>
+        <div class="beta-meta reveal">
+          <span id="betaMoveLbl"></span>
+          <span id="betaTryLbl"></span>
+          <span id="betaMsg"></span>
+          <span class="qz-lab">Foto · Wikimedia Commons</span>
+          <button class="btn btn--accent" id="betaReplay" style="display:none">Climb Again</button>
+        </div>
+      </div>
+    </section>
     <div class="brand-rule" aria-hidden="true"></div>
 <footer class="footer">
   <div class="container reveal">
@@ -2318,6 +2353,96 @@
   qStart.addEventListener('click', startQuiz);
   qClose.addEventListener('click', quitFall);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && quizMode) quitFall(); });
+  (function(){
+    const STAGE = document.getElementById('betaStage');
+    if (!STAGE) return;
+    const BC = document.getElementById('betaClimber');
+    const bMove = document.getElementById('betaMoveLbl');
+    const bTry = document.getElementById('betaTryLbl');
+    const bMsg = document.getElementById('betaMsg');
+    const bReplay = document.getElementById('betaReplay');
+    const HOLDS = [[12,86],[24,74],[38,80],[30,60],[46,66],[58,56],[44,48],[62,40],[52,32],[70,26],[84,18],[78,10]];
+    const PATH = [0,2,3,5,6,8,10,11];
+    let k = 0, tries = 0, locked = false;
+    function spot(x, y, label){
+      const b = document.createElement('button');
+      b.className = 'beta-spot';
+      b.style.left = x + '%';
+      b.style.top = y + '%';
+      b.setAttribute('aria-label', label);
+      STAGE.appendChild(b);
+      return b;
+    }
+    function clearSpots(){ document.querySelectorAll('.beta-spot').forEach(s => s.remove()); }
+    function setClimb(i){
+      const h = HOLDS[PATH[i]];
+      BC.style.left = h[0] + '%';
+      BC.style.top = h[1] + '%';
+    }
+    function round(){
+      clearSpots();
+      locked = false;
+      bMove.textContent = 'Move ' + k + ' / ' + (PATH.length - 1);
+      const nxt = PATH[k + 1];
+      const decoys = [];
+      while (decoys.length < 2) {
+        const c = Math.floor(Math.random() * HOLDS.length);
+        if (c !== nxt && c !== PATH[k] && !decoys.includes(c) && !PATH.slice(0, k + 1).includes(c)) decoys.push(c);
+      }
+      shuf([nxt].concat(decoys)).forEach((hi, idx) => {
+        const h = HOLDS[hi];
+        const b = spot(h[0], h[1], ['A','B','C'][idx]);
+        b.addEventListener('click', () => pick(b, hi));
+      });
+    }
+    function done(){
+      bMsg.textContent = 'Summit! You read the route in one go.';
+      bReplay.style.display = '';
+    }
+    function pick(btn, hi){
+      if (locked) return;
+      locked = true;
+      tries++;
+      bTry.textContent = 'Attempts ' + tries;
+      if (hi === PATH[k + 1]) {
+        btn.classList.add('ok');
+        setTimeout(() => {
+          k += 1;
+          setClimb(k);
+          if (k === PATH.length - 1) done();
+          else setTimeout(round, 480);
+        }, 420);
+      } else {
+        btn.classList.add('bad');
+        STAGE.classList.add('shake');
+        BC.classList.add('fall');
+        const from = parseFloat(BC.style.top) || 0;
+        BC.style.top = '94%';
+        setTimeout(() => {
+          BC.classList.remove('fall');
+          BC.style.transition = 'none';
+          BC.style.top = from + '%';
+          void BC.offsetWidth;
+          BC.style.transition = '';
+          STAGE.classList.remove('shake');
+          btn.classList.remove('bad');
+          bMsg.textContent = 'You fell! Wrong beta.';
+          setTimeout(() => { bMsg.textContent = ''; round(); }, 650);
+        }, 900);
+      }
+    }
+    bReplay.addEventListener('click', () => {
+      k = 0; tries = 0;
+      bTry.textContent = 'Attempts 0';
+      bMsg.textContent = '';
+      bReplay.style.display = 'none';
+      setClimb(0);
+      round();
+    });
+    bTry.textContent = 'Attempts 0';
+    setClimb(0);
+    round();
+  })();
 
   const spyLinks = document.querySelectorAll('.toc a[href^="#"], .topbar-links a[href^="#"]');
   const chapterLinks = document.querySelectorAll('.topbar-chapters a');
@@ -2379,5 +2504,5 @@
   });
 </script>
 
-</body>
+<script>document.querySelectorAll("a.lang-btn").forEach(function(a){a.addEventListener("click",function(e){if(location.protocol==="file:"){e.preventDefault();location.href=a.dataset.file;}});});</script></body>
 </html>
