@@ -159,6 +159,7 @@
   @keyframes cp-puff{0%{opacity:0;transform:scale(.3)}30%{opacity:.45}100%{opacity:0;transform:scale(1.8)}}
   .climb-progress.moving .cp-ga,.climb-progress.moving .cp-gb,.climb-progress.moving .cp-gl1,.climb-progress.moving .cp-gl2{animation-duration:.45s;}
   .climb-progress.moving .cp-climber svg,.climb-progress.moving .cp-ga .cp-chalk,.climb-progress.moving .cp-gb .cp-chalk{animation-duration:.45s;}
+  .climb-progress:not(.moving) :is(.cp-ga,.cp-gb,.cp-gl1,.cp-gl2,.cp-body,.cp-head,.cp-chalk,.cp-climber svg,.cp-fill::after){animation-play-state:paused;}
   @media(max-width:900px){.climb-progress{display:none}}
   @media(prefers-reduced-motion:reduce){.cp-ga,.cp-gb,.cp-gl1,.cp-gl2,.cp-body,.cp-head,.cp-chalk,.cp-climber svg,.cp-fill::after{animation:none}}
 
@@ -2082,7 +2083,7 @@
     cpRoot.classList.toggle('topped', pr >= 0.99);
     cpRoot.classList.add('moving');
     clearTimeout(cpIdle);
-    cpIdle = setTimeout(() => cpRoot.classList.remove('moving'), 200);
+    cpIdle = setTimeout(() => cpRoot.classList.remove('moving'), 400);
     backtop.classList.toggle('show', window.scrollY > 600);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
