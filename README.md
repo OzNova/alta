@@ -26,3 +26,4 @@ Both files are fully self-contained: inline CSS/JS, embedded knot diagrams, no b
 ---
 
 MASTER THE WALL. MIND THE FALL · Concept by Ozan
+- Kavramsal ana sayfa: kok (index.html) · Rehber TR: /guide/ · Rehber EN: /en/
