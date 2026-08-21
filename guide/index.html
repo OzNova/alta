@@ -222,14 +222,18 @@
   .bflag{fill:var(--c3);opacity:.55;transition:opacity .3s ease;}
   .bflagpole{stroke:#F7F5EF;stroke-width:1;opacity:.7;}
   .beta-stage.done .bflag{animation:cp-pop .6s ease;opacity:1;}
-  .beta-stage::before{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(10,12,16,.74),rgba(10,12,16,.42));}
-  .bsvg{z-index:1;}
-  .bbanner{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:2;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#F7F5EF;background:rgba(10,12,16,.78);border:1px solid var(--c3);border-radius:999px;padding:.32rem .85rem;white-space:nowrap;}
-  .bopt circle{stroke-width:2;}
-  .bhold{opacity:1;stroke:#10131A;stroke-width:.8;}
-  .bmark{font-family:'JetBrains Mono',monospace;font-size:5px;font-weight:700;fill:#E46B5B;text-anchor:middle;}
-  .bstart{fill:none;stroke:#7fb069;stroke-width:1.4;stroke-dasharray:2.4 2;transform-box:fill-box;transform-origin:center;animation:bstartspin 3s linear infinite;}
-  @keyframes bstartspin{to{transform:rotate(360deg)}}
+  .kchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+  .kchip{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.06em;padding:.28rem .6rem;border-radius:999px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;transition:border-color .2s ease,color .2s ease;}
+  .kchip:hover{border-color:var(--c1);}
+  .kchip.on{border-color:var(--c1);color:var(--c1);}
+  .kbase{fill:none;stroke:var(--line);stroke-width:2.4;stroke-linecap:round;}
+  .krope{fill:none;stroke:var(--c1);stroke-width:3.4;stroke-linecap:round;transition:stroke-dashoffset .5s ease;}
+  .kre{fill:none;stroke:var(--c2);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:4 3;opacity:0;transition:opacity .5s ease;}
+  .kre.show{opacity:.95;}
+  .kanchor{fill:none;stroke:var(--text);stroke-width:2;}
+  .gcard{perspective:600px;background:none;border:none;padding:0;cursor:pointer;height:86px;}
+  .gcard .gb.gimg{padding:0;background:#10131A;overflow:hidden;}
+  .gcard .gb.gimg img{width:100%;height:100%;object-fit:cover;display:block;}
   @media (max-width:600px){.bbanner{white-space:normal;text-align:center;max-width:92%;font-size:.58rem;border-radius:12px;line-height:1.5;}}
   .bdust{fill:rgba(230,232,230,.55);pointer-events:none;animation:bdust .7s ease forwards;}
   @keyframes bdust{to{r:8;opacity:0}}
@@ -2288,14 +2292,15 @@
       <div class="container">
         <div class="section-head reveal">
           <span class="eyebrow">22 — MINI GAMES</span>
-          <h2>Tek Tıkla Rota Çöz</h2>
-          <p>Tahtaya çizilmiş problemde üç tutuş yanıp söner: hangisi rotanın sıradaki adımı? Doğruysa tırmanıcı ilerler, yanlışsa 2 saniyelik düşüş senindir.</p>
+          <h2>Oynayarak Öğren</h2>
+          <p>Altı klasik düğümü süreye karşı ör, kartları çevirerek ekipmanı fotoğraflarından tanı.</p>
         </div>
         <div class="game-grid">
           <article class="game-card reveal">
-            <h3>Düğüm Kur — Süreye Karşı</h3>
-            <p>Adımları doğru sırayla tıkla; ip kendi kendini örsün. İlk tıkta kronometre başlar.</p>
-            <svg id="knotRope" viewBox="0 0 120 64" aria-hidden="true"><path id="knotPath" class="krope" d="M14,52 C30,14 58,10 63,30 C66,46 42,50 39,33 C36,17 64,8 84,22 C102,34 96,52 79,49"/></svg>
+            <h3>Düğüm Atölyesi</h3>
+            <p>Bir düğüm seç, adımları sırayla tıkla — ip kendi kendini kursun. Her düğümün rekoru ayrı tutulur.</p>
+            <div class="kchips" id="knotChips"></div>
+            <svg id="knotRope" viewBox="0 0 120 72" aria-hidden="true"><path id="knotBase" class="kbase" d=""/><path id="knotPath" class="krope" d=""/><path id="knotRetrace" class="kre" d=""/></svg>
             <div class="knot-pool" id="knotPool"></div>
             <div class="knot-line" id="knotLine"></div>
             <div class="g-meta"><span id="knotTime" class="g-time">0.0s</span><span id="knotBest" class="g-best"></span><button class="g-reset" id="knotReset">Sıfırla</button></div>
@@ -2303,7 +2308,7 @@
           </article>
           <article class="game-card reveal">
             <h3>Ekipman Hafızası</h3>
-            <p>12 kartı çevir, ekipmanı göreviyle eşleştir. En az hamlede bitiren kazanır.</p>
+            <p>Fotoğrafı ekipmanın adıyla eşleştir. En az hamlede bitiren kazanır.</p>
             <div class="gm-grid" id="gmGrid"></div>
             <div class="g-meta"><span id="gearTime" class="g-time">0.0s</span><span id="gearMoves" class="g-best"></span><span id="gearBest" class="g-best"></span><button class="g-reset" id="gearReset">Sıfırla</button></div>
             <div class="g-msg" id="gearMsg"></div>
@@ -2657,56 +2662,66 @@
   (function(){
     const KP = document.getElementById('knotPool');
     if (!KP) return;
+    const KC = document.getElementById('knotChips');
     const KL = document.getElementById('knotLine');
     const KM = document.getElementById('knotMsg');
-    const KR = document.getElementById('knotReset');
+    const KRr = document.getElementById('knotReset');
     const KT = document.getElementById('knotTime');
     const KB = document.getElementById('knotBest');
+    const KBASE = document.getElementById('knotBase');
     const KPATH = document.getElementById('knotPath');
+    const KRE = document.getElementById('knotRetrace');
     const GG = document.getElementById('gmGrid');
     const GM = document.getElementById('gearMsg');
     const GRr = document.getElementById('gearReset');
     const GT = document.getElementById('gearTime');
     const GMv = document.getElementById('gearMoves');
     const GB = document.getElementById('gearBest');
-    const KSTEPS = ["Uçtan bir karış ölçüp geri kıvırarak temel sekizi oluştur", "Sekizin ucunu emniyet kemerinin bağlantı noktalarından geçir", "Ucu sekizin izini takip ederek yeniden diz", "Simetrik sık ve 15 cm kuyruk bırakarak bitir"];
-    const PAIRS = [["GriGri", "Yardımcı frenli belay cihazı"], ["Quickdraw", "Rotanın ara emniyet noktası"], ["Chalk", "Nemli eli kurutur"], ["Kask", "Taş düşmesine karşı korur"], ["Dinamik ip", "Düşüş enerjisini absorbe eder"], ["Emniyet kemeri", "İpin bağlandığı nokta"]];
-    const LBL_STEP = 'Adım';
     function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-    let knext = 0, kt0 = null, ktimer = null, ktries = 0;
+    const KNOTS = [{'id': 'sekiz', 'n': 'Sekiz Takip', 'd': 'M16,64 C6,48 14,32 30,34 C46,36 50,50 38,55 C26,60 18,50 26,40 C36,28 58,24 74,30 L96,38', 'rd': 'M98,43 L82,36 C68,30 50,32 42,42 C38,47 41,53 47,52', 's': ['Uçtan ~1.5 m ölçüp serbest bir sekiz çiz', 'Ucu kemerin bağlantı noktalarından geçir', 'Düğümün izini paralel biçimde geri diz', 'Sık; en az 15 cm kuyruk bırak']}, {'id': 'makarama', 'n': 'Makarama', 'd': 'M18,62 C16,44 30,32 48,32 C64,32 74,40 74,50 C74,58 66,62 60,58 C88,54 92,42 82,37 C75,34 68,39 70,46 L70,56', 'rd': '', 's': ['Ayak ucunda küçük bir göz oluştur', 'Ucu gözün içinden yukarı çıkar', 'Duran ipin arkasından dolaştır', 'Yeniden gözün içine indirip sık']}, {'id': 'kovalama', 'n': 'Kovalama', 'd': 'M6,38 H28 M40,33 c-7,-9 -16,1 -7,7 c8,5 14,-2 7,-7 M52,38 H66 M78,33 c-7,-9 -16,1 -7,7 c8,5 14,-2 7,-7 M90,38 H114', 'rd': '', 's': ['İp ucunda basit bir ilmek yap', 'Ucu ilmeğin içinden iki kez dolaştır', 'İki yönden de sıkıp kontrol et']}, {'id': 'prusik', 'n': 'Prusik', 'd': 'M4,26 H116 M34,52 C26,20 62,12 64,28 C65,40 40,44 38,30 C37,18 78,10 84,24 C88,34 60,44 52,34', 'rd': '', 's': ['6 mm cordla ~1.2 m halka kur', 'Ana ipe 3–4 tur sar', 'Yük binince sıkıştığını test et']}, {'id': 'italyan', 'n': 'İtalyan', 'd': 'M50,10 h18 a7,7 0 0 1 7,7 v38 a7,7 0 0 1 -7,7 h-18 a7,7 0 0 1 -7,-7 V17 a7,7 0 0 1 7,-7 z M28,22 C44,16 72,18 88,24 M88,48 C72,54 44,52 28,46 M28,46 C42,36 76,34 88,48', 'rd': '', 's': ['Karabinaya bir halka as', 'İkinci halkayı öne katlayıp içinden geçir', 'Karabinayı kilitle, fren ipini kontrol et']}, {'id': 'kelebek', 'n': 'Kelebek', 'd': 'M8,40 C30,26 46,50 60,40 C74,30 92,52 112,38 M50,38 C50,24 70,24 70,38 C70,46 58,48 54,42', 'rd': '', 's': ['İpi üç halka olacak biçimde katla', 'Ortadaki halkayı diğer ikisinin arasından geçir', 'Halkayı dışarı çekip düğümü sık']}];
+    const PAIRS = [{'img': None, 'txt': 'Tırmanış ayakkabısı'}, {'img': None, 'txt': 'Kask'}, {'img': None, 'txt': 'Belay cihazı'}, {'img': None, 'txt': 'Magnezit çantası'}, {'img': None, 'txt': 'Kamalak seti'}];
+    const LBL_STEP = 'Adım';
     const store = {
       get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
       set(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
     };
     function fmt(ms){ return (ms / 1000).toFixed(1) + 's'; }
-    function knotBest(){ return +(store.get('alta-knot-best') || 0); }
-    function gearBestMs(){ return +(store.get('alta-gear-best') || 0); }
-    function showBest(){
-      KB.textContent = knotBest() ? 'Rekor: ' + fmt(knotBest()) : '';
-      GB.textContent = gearBestMs() ? 'Rekor: ' + fmt(gearBestMs()) : '';
+    let cur = 0, knext = 0, kt0 = null, ktimer = null, ktries = 0, kwon = false;
+    function knotKey(){ return 'alta-knot-best-' + KNOTS[cur].id; }
+    function showKnotBest(){
+      const b = +(store.get(knotKey()) || 0);
+      KB.textContent = b ? 'Rekor: ' + fmt(b) : '';
     }
     function ropeTo(step){
       const L = KPATH.getTotalLength();
       KPATH.style.strokeDasharray = L;
-      KPATH.style.strokeDashoffset = L * (1 - step / KSTEPS.length);
+      KPATH.style.strokeDashoffset = L * (1 - step / KNOTS[cur].s.length);
     }
-    function buildKnot(){
-      knext = 0; ktries = 0; kt0 = null;
+    function buildKnot(i){
+      cur = i;
+      knext = 0; ktries = 0; kt0 = null; kwon = false;
       clearInterval(ktimer);
       KT.textContent = '0.0s';
       KL.innerHTML = ''; KM.textContent = '';
+      KRE.classList.remove('show');
+      KBASE.setAttribute('d', KNOTS[i].d);
+      KPATH.setAttribute('d', KNOTS[i].d);
+      KRE.setAttribute('d', KNOTS[i].rd || '');
+      KPATH.style.strokeDasharray = 'none';
+      KPATH.style.strokeDashoffset = '0';
       ropeTo(0);
       KP.innerHTML = '';
-      shuf(KSTEPS.map((s, i) => i)).forEach(i => {
+      shuf(KNOTS[i].s.map((st, ix) => ix)).forEach(ix => {
         const b = document.createElement('button');
         b.className = 'knot-step';
-        b.textContent = KSTEPS[i];
+        b.textContent = KNOTS[i].s[ix];
         b.addEventListener('click', () => {
+          if (kwon || b.classList.contains('used')) return;
           if (!kt0) {
             kt0 = performance.now();
             ktimer = setInterval(() => { KT.textContent = fmt(performance.now() - kt0); }, 100);
           }
-          if (i === knext) {
+          if (ix === knext) {
             b.classList.add('used');
             const t = document.createElement('i');
             t.className = 'done-chip';
@@ -2714,15 +2729,18 @@
             KL.appendChild(t);
             knext++;
             ropeTo(knext);
-            if (knext === KSTEPS.length) {
+            if (knext === KNOTS[cur].s.length) {
+              kwon = true;
               clearInterval(ktimer);
               const ms = Math.round(performance.now() - kt0);
               KM.textContent = 'Düğüm tamam! ' + fmt(ms) + ' · ' + ktries + '__TRIES__';
-              if (!knotBest() || ms < knotBest()) {
-                store.set('alta-knot-best', String(ms));
+              const prev = +(store.get(knotKey()) || 0);
+              if (!prev || ms < prev) {
+                store.set(knotKey(), String(ms));
                 KM.textContent += ' ★';
               }
-              showBest();
+              if ((KNOTS[cur].rd || '').length) KRE.classList.add('show');
+              showKnotBest();
             }
           } else {
             ktries++;
@@ -2732,20 +2750,35 @@
         });
         KP.appendChild(b);
       });
+      showKnotBest();
+      KC.querySelectorAll('.kchip').forEach((c, ci) => c.classList.toggle('on', ci === i));
     }
-    KR.addEventListener('click', buildKnot);
-    let flipped = [], lockBoard = false, foundPairs = 0, gmoves = 0, gt0 = null, gtimer = null;
+    KNOTS.forEach((kn, i) => {
+      const b = document.createElement('button');
+      b.className = 'kchip';
+      b.textContent = kn.n;
+      b.addEventListener('click', () => buildKnot(i));
+      KC.appendChild(b);
+    });
+    KRr.addEventListener('click', () => buildKnot(cur));
+    buildKnot(0);
+
+    let flipped = [], lockBoard = false, foundPairs = 0, gmoves = 0, gt0 = null, gtimer = null, unflipT = null;
     function buildGear(){
       flipped = []; lockBoard = false; foundPairs = 0; gmoves = 0; gt0 = null;
-      clearInterval(gtimer);
+      clearInterval(gtimer); clearTimeout(unflipT);
       GT.textContent = '0.0s'; GMv.textContent = ''; GM.textContent = '';
       GG.innerHTML = '';
       const cards = [];
-      PAIRS.forEach((p, i) => { cards.push({ p: i, txt: p[0] }); cards.push({ p: i, txt: p[1] }); });
+      PAIRS.forEach((p, i) => { cards.push({ p: i, img: p.img }); cards.push({ p: i, txt: p.txt }); });
       shuf(cards).forEach(cd => {
         const b = document.createElement('button');
         b.className = 'gcard';
-        b.innerHTML = '<span class="gin"><span class="gf">?</span><span class="gb">' + cd.txt + '</span></span>';
+        b.setAttribute('aria-label', 'card');
+        const back = cd.img
+          ? '<span class="gb gimg"><img loading="lazy" alt="" src="' + cd.img + '"></span>'
+          : '<span class="gb">' + cd.txt + '</span>';
+        b.innerHTML = '<span class="gin"><span class="gf">?</span>' + back + '</span>';
         b.dataset.p = cd.p;
         b.addEventListener('click', () => flip(b));
         GG.appendChild(b);
@@ -2772,25 +2805,25 @@
             clearInterval(gtimer);
             const ms = Math.round(performance.now() - gt0);
             GM.textContent = 'Hafiza temiz! ' + fmt(ms) + ' · ' + gmoves + ' hamle';
-            if (!gearBestMs() || ms < gearBestMs()) {
+            const prev = +(store.get('alta-gear-best') || 0);
+            if (!prev || ms < prev) {
               store.set('alta-gear-best', String(ms));
               GM.textContent += ' ★';
             }
-            showBest();
           }
         } else {
           a.classList.add('bad'); c.classList.add('bad');
-          setTimeout(() => {
+          unflipT = setTimeout(() => {
             a.classList.remove('flip', 'bad');
             c.classList.remove('flip', 'bad');
             flipped = []; lockBoard = false;
-          }, 700);
+          }, 750);
         }
       }
     }
     GRr.addEventListener('click', buildGear);
-    showBest();
-    buildKnot();
+    const gbPrev = +(store.get('alta-gear-best') || 0);
+    GB.textContent = gbPrev ? 'Rekor: ' + fmt(gbPrev) : '';
     buildGear();
   })();
 
