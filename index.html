@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALTA — Rock Climbing Guide</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F5EF;font-family:'Inter',system-ui,sans-serif;color:#22242A;}
+@media(prefers-color-scheme:dark){body{background:#0E0F13;color:#E6E8E6}}
+main{text-align:center;padding:24px;}
+svg{width:64px;height:70px;}
+h1{font-weight:800;letter-spacing:.32em;margin:18px 0 6px;}
+p{opacity:.7;font-size:.85rem;margin:0 0 28px;}
+a{display:inline-block;margin:0 8px;padding:.7rem 1.4rem;border:1px solid currentColor;border-radius:999px;text-decoration:none;color:inherit;font-size:.9rem;transition:.25s;}
+a:hover{background:#A6402E;border-color:#A6402E;color:#fff;}
+</style>
+</head>
+<body>
+<main>
+<svg viewBox="0 0 100 110" aria-hidden="true"><polygon points="50,15 15,95 32,95 50,52 68,95 85,95" fill="#8AA29E"/><rect x="30" y="70" width="40" height="5" fill="#F7F5EF"/><circle cx="50" cy="35" r="4" fill="#E6E8E6"/></svg>
+<h1>ALTA</h1>
+<p>Master the Wall. Mind the Fall</p>
+<a href="kaya-tirmanisi-rehberi_2.html">Türkçe</a>
+<a href="rock-climbing-guide-en.html">English</a>
+</main>
+<script>
+const tr = (navigator.language || 'en').toLowerCase().startsWith('tr');
+location.replace(tr ? 'kaya-tirmanisi-rehberi_2.html' : 'rock-climbing-guide-en.html');
+</script>
+</body>
+</html>

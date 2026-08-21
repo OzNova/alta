@@ -148,7 +148,14 @@
   .brand:hover .brand-icon circle{transform:translateY(-6px);}
   .foot-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:44px;}
   .foot-brand svg{width:26px;height:29px;}
-  .foot-brand span{font-family:'Inter',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.32em;color:var(--inverse-text);}
+  
+  #rockfall{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden;}
+  .pebble{position:absolute;top:-14px;background:var(--text);opacity:.26;border-radius:42% 58% 55% 45%/55% 45% 60% 50%;animation:pebble-fall linear forwards;}
+  @keyframes pebble-fall{to{transform:translateY(112vh) rotate(520deg);opacity:0}}
+  .climb-progress.slip .cp-climber{animation:cp-slip .9s cubic-bezier(.3,.7,.4,1);}
+  @keyframes cp-slip{0%{transform:translate(-50%,40%)}35%{transform:translate(-50%,calc(40% + 26px))}60%{transform:translate(-50%,calc(40% + 22px))}80%{transform:translate(-50%,calc(40% - 4px))}100%{transform:translate(-50%,40%)}}
+  .climb-progress.slip .cp-fill{transform-origin:bottom;animation:cp-stretch .9s ease;}
+  @keyframes cp-stretch{35%{transform:scaleY(.982)}65%{transform:scaleY(1.004)}}
   .cp-climber{
     position:absolute;left:50%;bottom:0;width:34px;height:46px;z-index:3;
     transform:translate(-50%,40%);
@@ -869,6 +876,7 @@
 </head>
 <body>
   <div class="brand-rule" aria-hidden="true"></div>
+  <div id="rockfall" aria-hidden="true"></div>
 
 <a class="skip" href="#content">İçeriğe geç</a>
 <div class="climb-progress" id="climbProgress" aria-hidden="true">
@@ -2105,6 +2113,31 @@
     cpRoot.classList.add('moving');
     clearTimeout(cpIdle);
     cpIdle = setTimeout(() => cpRoot.classList.remove('moving'), 400);
+  const rf = document.getElementById('rockfall');
+  const rmq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function toss(){
+    if (!rmq.matches && !document.hidden && rf) {
+      const n = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < n; i++) {
+        const p = document.createElement('i');
+        p.className = 'pebble';
+        const s = 3 + Math.random() * 4;
+        p.style.cssText = 'left:' + (Math.random() * 96 + 2).toFixed(2) + 'vw;width:' + s.toFixed(1) + 'px;height:' + (s * (0.7 + Math.random() * 0.6)).toFixed(1) + 'px;animation-duration:' + (1.1 + Math.random() * 1.2).toFixed(2) + 's;animation-delay:' + (Math.random() * 0.35).toFixed(2) + 's;';
+        rf.appendChild(p);
+        setTimeout(() => p.remove(), 3200);
+      }
+    }
+    setTimeout(toss, 6000 + Math.random() * 9000);
+  }
+  setTimeout(toss, 4000);
+  function slip(){
+    if (!rmq.matches && !document.hidden && !cpRoot.classList.contains('moving')) {
+      cpRoot.classList.add('slip');
+      setTimeout(() => cpRoot.classList.remove('slip'), 950);
+    }
+    setTimeout(slip, 24000 + Math.random() * 36000);
+  }
+  setTimeout(slip, 15000);
     backtop.classList.toggle('show', window.scrollY > 600);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
