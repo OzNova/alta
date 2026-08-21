@@ -315,6 +315,19 @@
   .brand:hover .brand-icon{transform:translateY(-2px);}
   .lang-btn{display:inline-flex;align-items:center;padding:.26rem .58rem;border:1px solid var(--border);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text);text-decoration:none;transition:border-color .2s ease,color .2s ease;}
   .lang-btn:hover{border-color:var(--c1);color:var(--c1);}
+  .back-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.26rem .58rem;border:1px solid var(--border);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text);text-decoration:none;transition:border-color .2s ease,color .2s ease;}
+  .back-btn:hover{border-color:var(--c2);color:var(--c2);}
+  #loadveil{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .45s ease,visibility .45s ease;}
+  #loadveil.off{opacity:0;visibility:hidden;pointer-events:none;}
+  .lv-car{width:46px;height:46px;stroke:var(--c1);fill:none;stroke-width:2;stroke-linecap:round;}
+  .lv-gate{stroke:var(--c2);stroke-dasharray:6;animation:lvgate 1s ease infinite;}
+  @keyframes lvgate{0%,100%{stroke-dashoffset:0}50%{stroke-dashoffset:-6}}
+  .lv-word{font-weight:800;font-size:1.4rem;letter-spacing:.35em;text-indent:.35em;color:var(--text);}
+  .lv-sub{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.25em;color:var(--c1);text-transform:uppercase;}
+  .lv-rope{width:130px;height:2px;background:var(--border);overflow:hidden;border-radius:2px;}
+  .lv-rope i{display:block;height:100%;width:40%;background:var(--c1);animation:lvrope 1s ease-in-out infinite;}
+  @keyframes lvrope{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
+  @media (prefers-reduced-motion:reduce){.lv-gate,.lv-rope i{animation:none;}}
   .brand span{font-family:'Inter','Helvetica Neue',sans-serif;font-weight:800;font-size:1.02rem;letter-spacing:.22em;}
   .topbar-chapters{
     display:none;align-items:center;gap:6px;
@@ -980,6 +993,12 @@
 <script>try{var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(!t&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)t="dark";if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
+<div id="loadveil" aria-hidden="true">
+  <svg class="lv-car" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 3c-4.4 0-7.5 3.1-7.5 7.6v6.8c0 3 2 5 5 5s5-2 5-5V10.6"/><path class="lv-gate" d="M13 3h4.2"/></svg>
+  <span class="lv-word">ALTA</span>
+  <span class="lv-rope"><i></i></span>
+  <span class="lv-sub">Loading the Climb</span>
+</div>
   <div class="brand-rule" aria-hidden="true"></div>
 
 <a class="skip" href="#content">Skip to content</a>
@@ -1011,6 +1030,7 @@
         <a href="#bolum-3">III · Safety</a>
         <a href="#bolum-4">IV · Progression</a>
       </div>
+      <a class="back-btn" href="../" aria-label="Arsenal">&larr; Arsenal</a>
       <a class="lang-btn" href="../" data-file="../index.html" lang="tr">TR</a>
       <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
@@ -2776,5 +2796,6 @@
   });
 </script>
 
+<script>(function(){var v=document.getElementById('loadveil');if(!v)return;var t0=performance.now();function hide(){var w=Math.max(0,650-(performance.now()-t0));setTimeout(function(){v.classList.add('off');setTimeout(function(){if(v.parentNode)v.remove();},500);},w);}if(document.readyState==='complete')hide();else addEventListener('load',hide);setTimeout(hide,2500);})();</script>
 <script>document.querySelectorAll("a.lang-btn").forEach(function(a){a.addEventListener("click",function(e){if(location.protocol==="file:"){e.preventDefault();location.href=a.dataset.file;}});});</script></body>
 </html>
