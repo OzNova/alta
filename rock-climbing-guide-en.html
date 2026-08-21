@@ -149,13 +149,21 @@
   .foot-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:44px;}
   .foot-brand svg{width:26px;height:29px;}
   
-  #rockfall{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden;}
-  .pebble{position:absolute;top:-14px;background:var(--text);opacity:.26;border-radius:42% 58% 55% 45%/55% 45% 60% 50%;animation:pebble-fall linear forwards;}
-  @keyframes pebble-fall{to{transform:translateY(112vh) rotate(520deg);opacity:0}}
-  .climb-progress.slip .cp-climber{animation:cp-slip .9s cubic-bezier(.3,.7,.4,1);}
-  @keyframes cp-slip{0%{transform:translate(-50%,40%)}35%{transform:translate(-50%,calc(40% + 26px))}60%{transform:translate(-50%,calc(40% + 22px))}80%{transform:translate(-50%,calc(40% - 4px))}100%{transform:translate(-50%,40%)}}
-  .climb-progress.slip .cp-fill{transform-origin:bottom;animation:cp-stretch .9s ease;}
-  @keyframes cp-stretch{35%{transform:scaleY(.982)}65%{transform:scaleY(1.004)}}
+  .climb-progress.quiz .cp-climber{transition:bottom .45s cubic-bezier(.34,1.3,.64,1);}
+  .climb-progress.falling .cp-climber{transition:none;}
+  .climb-progress.falling .cp-climber svg{animation:cp-tumble .68s ease-in forwards;}
+  @keyframes cp-tumble{to{transform:rotate(-32deg)}}
+  .quiz-card{max-width:640px;margin:26px auto 0;border:1px solid var(--border);border-radius:16px;padding:22px;background:var(--bg);box-shadow:0 14px 34px rgba(0,0,0,.12);}
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;opacity:.75;}
+  .quiz-top button{background:none;border:1px solid var(--border);border-radius:8px;color:inherit;width:28px;height:28px;cursor:pointer;}
+  .quiz-q{font-size:1.05rem;font-weight:600;margin:14px 0 12px;}
+  .quiz-opts{display:grid;gap:8px;}
+  .quiz-opts button{text-align:left;padding:.6rem .85rem;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text);cursor:pointer;font-size:.92rem;transition:border-color .2s ease,background-color .2s ease;}
+  .quiz-opts button:hover{border-color:var(--c1);}
+  .quiz-opts button.ok{border-color:var(--c1);background:color-mix(in srgb,var(--c1) 14%,transparent);}
+  .quiz-opts button.bad{border-color:var(--c2);background:color-mix(in srgb,var(--c2) 14%,transparent);}
+  .quiz-msg{min-height:1.3em;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.78rem;}
+  .quiz-actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
   .cp-climber{
     position:absolute;left:50%;bottom:0;width:34px;height:46px;z-index:3;
     transform:translate(-50%,40%);
@@ -181,7 +189,7 @@
   @keyframes cp-puff{0%{opacity:0;transform:scale(.3)}30%{opacity:.45}100%{opacity:0;transform:scale(1.8)}}
   .climb-progress.moving .cp-ga,.climb-progress.moving .cp-gb,.climb-progress.moving .cp-gl1,.climb-progress.moving .cp-gl2{animation-duration:.45s;}
   .climb-progress.moving .cp-climber svg,.climb-progress.moving .cp-ga .cp-chalk,.climb-progress.moving .cp-gb .cp-chalk{animation-duration:.45s;}
-  .climb-progress:not(.moving) :is(.cp-ga,.cp-gb,.cp-gl1,.cp-gl2,.cp-body,.cp-head,.cp-chalk,.cp-climber svg,.cp-fill::after){animation-play-state:paused;}
+  .climb-progress:not(.moving):not(.falling) :is(.cp-ga,.cp-gb,.cp-gl1,.cp-gl2,.cp-body,.cp-head,.cp-chalk,.cp-climber svg,.cp-fill::after){animation-play-state:paused;}
   @media(max-width:900px){.climb-progress{display:none}}
   @media(prefers-reduced-motion:reduce){.cp-ga,.cp-gb,.cp-gl1,.cp-gl2,.cp-body,.cp-head,.cp-chalk,.cp-climber svg,.cp-fill::after{animation:none}}
 
@@ -876,7 +884,6 @@
 </head>
 <body>
   <div class="brand-rule" aria-hidden="true"></div>
-  <div id="rockfall" aria-hidden="true"></div>
 
 <a class="skip" href="#content">Skip to content</a>
 <div class="climb-progress" id="climbProgress" aria-hidden="true">
@@ -2055,7 +2062,24 @@
     </section></main>
 </div>
 
-<div class="brand-rule" aria-hidden="true"></div>
+<section id="test" class="section" data-ch="4">
+      <span class="ghost" aria-hidden="true">20</span>
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">20 — KNOWLEDGE CHECK</span>
+          <h2>Test Your Knowledge</h2>
+          <p>Ten questions, one climb: every correct answer moves the climber beside you one step up, every wrong one a step down. Quit halfway and the rope comes off.</p>
+        </div>
+        <div class="quiz-card reveal" id="quizCard">
+          <div class="quiz-top"><span id="quizStep">0 / 10</span><button id="quizClose" aria-label="Close">✕</button></div>
+          <div class="quiz-q" id="quizQ">Ready? Carry your climber to the summit over ten questions.</div>
+          <div class="quiz-opts" id="quizOpts"></div>
+          <div class="quiz-msg" id="quizMsg"></div>
+          <div class="quiz-actions"><button class="btn btn--accent" id="quizStart">Start the Quiz</button></div>
+        </div>
+      </div>
+    </section>
+    <div class="brand-rule" aria-hidden="true"></div>
 <footer class="footer">
   <div class="container reveal">
     <span class="eyebrow" style="color:var(--c3)">Before the Summit</span>
@@ -2092,6 +2116,7 @@
   });
 
   let cpIdle;
+  let quizMode = false;
   const cpRoot = document.getElementById('climbProgress');
   const cpFill = document.getElementById('cpFill');
   const cpClimber = document.getElementById('cpClimber');
@@ -2106,43 +2131,114 @@
   const onScroll = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     const pr = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    cpFill.style.height = (pr * 100) + '%';
-    cpClimber.style.bottom = (pr * 100) + '%';
-    cpBolts.forEach(b => b.el.classList.toggle('on', pr >= b.p - 0.02));
-    cpRoot.classList.toggle('topped', pr >= 0.99);
+    if (!quizMode) {
+      cpFill.style.height = (pr * 100) + '%';
+      cpClimber.style.bottom = (pr * 100) + '%';
+      cpBolts.forEach(b => b.el.classList.toggle('on', pr >= b.p - 0.02));
+      cpRoot.classList.toggle('topped', pr >= 0.99);
+    }
     cpRoot.classList.add('moving');
     clearTimeout(cpIdle);
     cpIdle = setTimeout(() => cpRoot.classList.remove('moving'), 400);
-  const rf = document.getElementById('rockfall');
-  const rmq = window.matchMedia('(prefers-reduced-motion: reduce)');
-  function toss(){
-    if (!rmq.matches && !document.hidden && rf) {
-      const n = 1 + Math.floor(Math.random() * 3);
-      for (let i = 0; i < n; i++) {
-        const p = document.createElement('i');
-        p.className = 'pebble';
-        const s = 3 + Math.random() * 4;
-        p.style.cssText = 'left:' + (Math.random() * 96 + 2).toFixed(2) + 'vw;width:' + s.toFixed(1) + 'px;height:' + (s * (0.7 + Math.random() * 0.6)).toFixed(1) + 'px;animation-duration:' + (1.1 + Math.random() * 1.2).toFixed(2) + 's;animation-delay:' + (Math.random() * 0.35).toFixed(2) + 's;';
-        rf.appendChild(p);
-        setTimeout(() => p.remove(), 3200);
-      }
-    }
-    setTimeout(toss, 6000 + Math.random() * 9000);
-  }
-  setTimeout(toss, 4000);
-  function slip(){
-    if (!rmq.matches && !document.hidden && !cpRoot.classList.contains('moving')) {
-      cpRoot.classList.add('slip');
-      setTimeout(() => cpRoot.classList.remove('slip'), 950);
-    }
-    setTimeout(slip, 24000 + Math.random() * 36000);
-  }
-  setTimeout(slip, 15000);
     backtop.classList.toggle('show', window.scrollY > 600);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   backtop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  const QUIZ = [
+    { q: "What is the figure-8 follow-through knot primarily used for?", o: ["Joining two ropes", "Tying into your harness", "Backing up a Prusik", "Coiling spare rope"], c: 1 },
+    { q: "What is the best tactic on sloper holds?", o: ["Pinch and pull with fingers", "Keep your body away from the wall", "Keep weight low and under the hold", "Move fast"], c: 2 },
+    { q: "In the YDS system, how does difficulty increase past grade 5.10?", o: ["The number becomes 6", "Letters are added: a, b, c, d", "It switches to colors", "It uses percentages"], c: 1 },
+    { q: "Which fall is the hardest?", o: ["Fall factor 1", "Fall factor 2", "3 m above the anchor", "No fall is unsafe"], c: 1 },
+    { q: "What does chalk (magnesium carbonate) do?", o: ["Cleans the holds", "Dries hands and improves grip", "Softens the rope", "Stiffens shoe soles"], c: 1 },
+    { q: "What do quickdraws provide on a route?", o: ["Intermediate protection points for free rope run", "Backup knot stations", "Route-end markers", "Gym grade tags"], c: 0 },
+    { q: "Where is Geyikbayırı, Turkey's best-known climbing area?", o: ["Muğla", "Niğde", "Antalya", "Kocaeli"], c: 2 },
+    { q: "What is the right approach to hangboard training?", o: ["Max load every day", "Ideal for beginners", "Advanced level, controlled and infrequent", "Only before competitions"], c: 2 },
+    { q: "What is the golden rule while belaying?", o: ["The brake hand never leaves the rope", "Keep the rope always slack", "The watcher looks away", "Disassemble the anchor each turn"], c: 0 },
+    { q: "What is done at the end of each pitch on a multi-pitch route?", o: ["Throw the rope down", "Build an intermediate belay stance", "Refill the chalk bag", "Take off your shoes"], c: 1 }
+  ];
+  const qStep = document.getElementById('quizStep');
+  const qQ = document.getElementById('quizQ');
+  const qOpts = document.getElementById('quizOpts');
+  const qMsg = document.getElementById('quizMsg');
+  const qStart = document.getElementById('quizStart');
+  const qClose = document.getElementById('quizClose');
+  let qi = 0, score = 0, active = false, locked = false;
+  const stepPct = 100 / QUIZ.length;
+  function moveClimber(){
+    cpRoot.classList.add('quiz');
+    cpClimber.style.bottom = (score * stepPct) + '%';
+    cpRoot.classList.toggle('topped', score === QUIZ.length);
+  }
+  function render(){
+    qStep.textContent = (qi + 1) + ' / ' + QUIZ.length + ' · ' + score + ' pts';
+    const item = QUIZ[qi];
+    qQ.textContent = item.q;
+    qOpts.innerHTML = '';
+    item.o.forEach((opt, i) => {
+      const b = document.createElement('button');
+      b.textContent = opt;
+      b.addEventListener('click', () => answer(i, b));
+      qOpts.appendChild(b);
+    });
+    qMsg.textContent = '';
+    locked = false;
+  }
+  function answer(i, btn){
+    if (!active || locked) return;
+    locked = true;
+    const ok = i === QUIZ[qi].c;
+    btn.classList.add(ok ? 'ok' : 'bad');
+    if (!ok) qOpts.children[QUIZ[qi].c].classList.add('ok');
+    score = Math.max(0, Math.min(QUIZ.length, score + (ok ? 1 : -1)));
+    qMsg.textContent = ok ? 'Correct! One step up.' : 'Wrong. One step down.';
+    moveClimber();
+    setTimeout(() => { qi += 1; qi < QUIZ.length ? render() : finish(); }, 950);
+  }
+  function startQuiz(){
+    active = true; qi = 0; score = 0;
+    qStart.style.display = 'none';
+    render();
+    moveClimber();
+  }
+  function finish(){
+    active = false;
+    qStep.textContent = 'Result: ' + score + ' / ' + QUIZ.length;
+    qQ.textContent = score === QUIZ.length ? 'Summit! A flawless climb.' : score >= QUIZ.length * 0.7 ? 'Strong climb — you are near the top.' : score >= QUIZ.length * 0.4 ? 'Solid attempt — revisit a few sections.' : 'The wall won this time — head back to the guide!';
+    qOpts.innerHTML = '';
+    qMsg.textContent = '';
+    qStart.style.display = '';
+  }
+  function endQuiz(){
+    quizMode = false;
+    cpRoot.classList.remove('quiz','topped');
+    onScroll();
+  }
+  function quitFall(){
+    if (active && qi < QUIZ.length) {
+      active = false;
+      qOpts.innerHTML = '';
+      qMsg.textContent = 'Quiz abandoned — the climber fell.';
+      const start = parseFloat(cpClimber.style.bottom) || 0;
+      const t0 = performance.now(), D = 700;
+      cpRoot.classList.remove('quiz');
+      cpRoot.classList.add('falling');
+      (function drop(t){
+        const k = Math.min(1, (t - t0) / D), e = k * k;
+        cpClimber.style.bottom = (start * (1 - e)) + '%';
+        if (k < 1) requestAnimationFrame(drop);
+        else {
+          cpRoot.classList.remove('falling');
+          qQ.textContent = 'He fell! Try again whenever you are ready.';
+          qStart.style.display = '';
+          endQuiz();
+        }
+      })(t0);
+    } else endQuiz();
+  }
+  qStart.addEventListener('click', startQuiz);
+  qClose.addEventListener('click', quitFall);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && quizMode) quitFall(); });
 
   const spyLinks = document.querySelectorAll('.toc a[href^="#"], .topbar-links a[href^="#"]');
   const chapterLinks = document.querySelectorAll('.topbar-chapters a');
