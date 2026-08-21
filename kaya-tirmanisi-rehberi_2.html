@@ -164,6 +164,30 @@
   .quiz-opts button.bad{border-color:var(--c2);background:color-mix(in srgb,var(--c2) 14%,transparent);}
   .quiz-msg{min-height:1.3em;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.78rem;}
   .quiz-actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
+  .quiz-card{position:relative;}
+  .climb-progress.off{display:none;}
+  .qz-bar{position:absolute;left:-54px;top:12px;bottom:12px;width:34px;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+  .quiz-card.running .qz-bar,.quiz-card.done .qz-bar{opacity:1;}
+  @media(max-width:900px){.qz-bar{display:none}}
+  .qz-track{position:absolute;left:50%;top:14px;bottom:14px;width:4px;transform:translateX(-50%);border-radius:99px;background:var(--border);}
+  .qz-fill{position:absolute;left:0;bottom:0;width:100%;height:0;border-radius:99px;background:linear-gradient(0deg,var(--c1),var(--c2) 55%,var(--c3));transition:height .45s cubic-bezier(.34,1.3,.64,1);}
+  .qz-dot{position:absolute;left:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,50%);background:var(--bg);border:2px solid var(--border);transition:border-color .25s ease,background-color .25s ease;z-index:2;}
+  .qz-dot.on{border-color:var(--c2);background-color:var(--c2);}
+  .qz-climber{position:absolute;left:50%;bottom:0;width:30px;height:41px;z-index:3;transform:translate(-50%,40%);transition:bottom .45s cubic-bezier(.34,1.3,.64,1);}
+  .qz-climber.fall{transition:none;}
+  .quiz-card.falling .qz-climber svg{animation:cp-tumble .68s ease-in forwards;}
+  .quiz-setup{margin-top:14px;display:grid;gap:10px;}
+  .qz-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .qz-lab{font-family:'JetBrains Mono',monospace;font-size:.72rem;opacity:.7;min-width:74px;}
+  .qz-chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .qz-chips button{padding:.32rem .7rem;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.72rem;cursor:pointer;transition:border-color .2s ease,color .2s ease;}
+  .qz-chips button.sel{border-color:var(--c2);color:var(--c2);}
+  .quiz-card.running .cp-ga{transform-origin:0 100%;animation:cp-a 1.15s cubic-bezier(.45,0,.55,1) infinite alternate;}
+  .quiz-card.running .cp-gb{transform-origin:0 0;animation:cp-b 1.15s cubic-bezier(.45,0,.55,1) infinite alternate;animation-delay:-.55s;}
+  .quiz-card.running .cp-gl1{transform-origin:0 0;animation:cp-b 1.15s cubic-bezier(.45,0,.55,1) infinite alternate;animation-delay:-.3s;}
+  .quiz-card.running .cp-gl2{transform-origin:100% 0;animation:cp-a 1.15s cubic-bezier(.45,0,.55,1) infinite alternate;animation-delay:-.85s;}
+  .quiz-card.running .cp-ga .cp-chalk{animation:cp-puff 1.15s ease-out infinite;}
+  .quiz-card.running .cp-gb .cp-chalk{animation:cp-puff 1.15s ease-out infinite;animation-delay:-.55s;}
   .cp-climber{
     position:absolute;left:50%;bottom:0;width:34px;height:46px;z-index:3;
     transform:translate(-50%,40%);
@@ -914,7 +938,7 @@
         <a href="#bolum-3">III · Güvenlik</a>
         <a href="#bolum-4">IV · Gelişim</a>
       </div>
-      <a class="lang-btn" href="rock-climbing-guide-en.html" lang="en">EN</a>
+      <a class="lang-btn" href="en/" lang="en">EN</a>
       <button class="theme-btn" id="themeToggle" aria-label="Tema değiştir">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -2071,9 +2095,29 @@
           <p>On soru, tek tırmanış: her doğru cevap yandaki tırmanıcıyı bir adım yukarı taşır, her yanlış bir adım indirir. Yarıda bırakırsan ip çözülür.</p>
         </div>
         <div class="quiz-card reveal" id="quizCard">
-          <div class="quiz-top"><span id="quizStep">0 / 10</span><button id="quizClose" aria-label="Kapat">✕</button></div>
-          <div class="quiz-q" id="quizQ">Hazır mısın? On soruluk rotada tırmanıcını zirveye taşı.</div>
+          <div class="qz-bar" aria-hidden="true">
+            <div class="qz-track">
+              <svg class="cp-flag" viewBox="0 0 20 20"><path d="M10 2 L17 18 H3 Z"/></svg>
+              <div class="qz-fill" id="qzFill"></div>
+              <div class="qz-climber" id="qzClimber">
+                <svg viewBox="0 0 36 52">
+                  <circle class="cp-head" cx="17" cy="6" r="4.5"/>
+                  <path class="cp-body" d="M17 11 L15 27"/>
+                  <g class="cp-ga"><path class="cp-limb" d="M16 15 L28 8"/><circle class="cp-chalk" cx="28" cy="8" r="2"/></g>
+                  <g class="cp-gb"><path class="cp-limb" d="M16 17 L27 23"/><circle class="cp-chalk" cx="27" cy="23" r="2"/></g>
+                  <g class="cp-gl1"><path class="cp-limb" d="M15 27 L23 34 L20 42"/></g>
+                  <g class="cp-gl2"><path class="cp-limb" d="M15 27 L9 45"/></g>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="quiz-top"><span id="quizStep">—</span><button id="quizClose" aria-label="Kapat">✕</button></div>
+          <div class="quiz-q" id="quizQ">Konu ve soru sayısını seç, tırmanış başlasın.</div>
           <div class="quiz-opts" id="quizOpts"></div>
+          <div class="quiz-setup" id="quizSetup">
+            <div class="qz-row"><span class="qz-lab" id="labTopic"></span><div class="qz-chips" id="qzTopics"></div></div>
+            <div class="qz-row"><span class="qz-lab" id="labCount"></span><div class="qz-chips" id="qzCounts"></div></div>
+          </div>
           <div class="quiz-msg" id="quizMsg"></div>
           <div class="quiz-actions"><button class="btn btn--accent" id="quizStart">Testi Başlat</button></div>
         </div>
@@ -2145,39 +2189,49 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   backtop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  const QUIZ = [
-    { q: "Sekiz takip düğümü (figure-8 follow-through) temel olarak ne için kullanılır?", o: ["İki ipi birleştirmek", "İpi emniyet kemerine bağlamak", "Prusik yedeği kurmak", "Fazla ipi sarmak"], c: 1 },
-    { q: "Sloper tipi tutuşta en etkili taktik nedir?", o: ["Parmakları kıstırarak çekmek", "Gövdeyi duvardan uzaklaştırmak", "Ağırlığı düşük ve tutuşun altına vermek", "Hızlı hareket etmek"], c: 2 },
-    { q: "YDS sisteminde 5.10 seviyesinden sonra zorluk nasıl artar?", o: ["Rakam 6'ya çıkar", "Harf eklenir: a, b, c, d", "Renk koduna geçilir", "Yüzdeyle gösterilir"], c: 1 },
-    { q: "En sert düşüş hangisidir?", o: ["Düşüş faktörü 1", "Düşüş faktörü 2", "Ankrajın 3 m üstünde", "Emniyetsiz düşüş yoktur"], c: 1 },
-    { q: "Chalk (magnezyum karbonat) ne işe yarar?", o: ["Tutuşları temizler", "Eli kurutup kavramayı güçlendirir", "İpi yumuşatır", "Ayakkabı tabanını sertleştirir"], c: 1 },
-    { q: "Quickdraw rotada ne sağlar?", o: ["İpin serbest akışını sağlayan ara emniyet noktası", "Yedek düğüm noktası", "Rota bitiş işareti", "Salon derece etiketi"], c: 0 },
-    { q: "Türkiye'nin en bilinen tırmanış bölgesi Geyikbayırı nerededir?", o: ["Muğla", "Niğde", "Antalya", "Kocaeli"], c: 2 },
-    { q: "Hangboard antrenmanı için doğru yaklaşım hangisidir?", o: ["Her gün maksimum yük", "Yeni başlayanlar için idealdir", "İleri seviyede, kontrollü ve seyrek", "Sadece yarış öncesi yapılır"], c: 2 },
-    { q: "Belay sırasındaki altın kural nedir?", o: ["Brake eli ipten hiç ayrılmaz", "İp hep gevşek tutulur", "Bakan yukarı bakmaz", "Ankraj her tur sökülür"], c: 0 },
-    { q: "Çok iplik (multi-pitch) rotada her kulvarın sonunda ne yapılır?", o: ["İp aşağı atılır", "Ara emniyet durağı kurulur", "Chalk torbası yenilenir", "Ayakkabı çıkarılır"], c: 1 }
-  ];
+  const QBANK = [{"t": "teknik", "q": "Sloper tipi tutuşta en etkili taktik nedir?", "o": ["Parmakları kıstırarak çekmek", "Gövdeyi duvardan uzaklaştırmak", "Ağırlığı düşük ve tutuşun altına vermek", "Hızlı hareket etmek"], "c": 2}, {"t": "teknik", "q": "Smearing (sürme) nedir?", "o": ["Ayakkabı ucunu yarığa takmak", "Tabanı düz kayaya yayarak basmak", "İple duvara yaslanmak", "Zıplayarak tutuşa atlamak"], "c": 1}, {"t": "teknik", "q": "Flagging tekniği ne sağlar?", "o": ["Daha güçlü kavrama", "Denge için bacağı uzatıp karşı ağırlık oluşturmak", "Daha hızlı tırmanış", "İpi kısaltmak"], "c": 1}, {"t": "teknik", "q": "Heel hook ne demektir?", "o": ["Topuğu bir tutuşa takıp çekmek", "Dizle basamak yapmak", "Çift elle çekmek", "Bir ip düğümü"], "c": 0}, {"t": "teknik", "q": "Dinlenmede en verimli durum hangisidir?", "o": ["Kollar bükülü beklemek", "Kollar düz, yükü iskelete vermek", "Tek parmakla asılı kalmak", "Duvara sırt üstü yaslanmak"], "c": 1}, {"t": "teknik", "q": "Overhang tırmanışında gövde nasıl konumlanmalı?", "o": ["Kalça duvara yakın, gövde içeri çekik", "Sırt kambur ve duvardan uzak", "Bacaklar tamamen serbest", "Baş sürekli aşağı bakmalı"], "c": 0}, {"t": "guvenlik", "q": "Sekiz takip düğümü ne için kullanılır?", "o": ["İki ipi birleştirmek", "İpi emniyet kemerine bağlamak", "Prusik yedeği kurmak", "Fazla ipi sarmak"], "c": 1}, {"t": "guvenlik", "q": "Belay sırasındaki altın kural nedir?", "o": ["Brake eli ipten hiç ayrılmaz", "İp hep gevşek tutulur", "Bakan yukarı bakmaz", "Ankraj her tur sökülür"], "c": 0}, {"t": "guvenlik", "q": "En sert düşüş hangisidir?", "o": ["Düşüş faktörü 1", "Düşüş faktörü 2", "Ankrajın 3 m üstü", "Güvenli düşüş yoktur"], "c": 1}, {"t": "guvenlik", "q": "Tırmanış başlamadan öncelikle ne yapılmalı?", "o": ["Kemer ve düğümün karşılıklı kontrolü", "Telefonun sessize alınması", "Chalk torbasının doldurulması", "Ayakkabı değiştirme"], "c": 0}, {"t": "guvenlik", "q": "Anchor kurulumunun temel ilkesi nedir?", "o": ["Tek güçlü nokta yeterlidir", "Bağımsız noktalara yedekli bağlantı", "İp her zaman en gergin olmalı", "Sadece tek karabiner kullanılır"], "c": 1}, {"t": "guvenlik", "q": "Çok iplik rotada her kulvarın sonunda ne yapılır?", "o": ["İp aşağı atılır", "Ara emniyet durağı kurulur", "Chalk yenilenir", "Ayakkabı çıkarılır"], "c": 1}, {"t": "ekipman", "q": "Quickdraw rotada ne sağlar?", "o": ["İpin serbest akışı için ara emniyet noktası", "Yedek düğüm noktası", "Rota bitiş işareti", "Derece etiketi"], "c": 0}, {"t": "ekipman", "q": "Chalk (magnezyum karbonat) ne işe yarar?", "o": ["Tutuşları temizler", "Eli kurutup kavramayı güçlendirir", "İpi yumuşatır", "Tabanı sertleştirir"], "c": 1}, {"t": "ekipman", "q": "Sportif tırmanışta tipik ip uzunluğu nedir?", "o": ["30–40 m", "60–70 m", "100–110 m", "15–20 m"], "c": 1}, {"t": "ekipman", "q": "Kask ne zaman takılmalı?", "o": ["Sadece yağışlı havada", "Salon dışında her tırmanışta", "Sadece zirvede", "Hiç gerekmez"], "c": 1}, {"t": "ekipman", "q": "GriGri'nin tubular cihazdan farkı nedir?", "o": ["Daha hafiftir", "Yardımcı frenli olmasıdır", "Daha ucuzdur", "Sadece inişte kullanılır"], "c": 1}, {"t": "ekipman", "q": "Tırmanış ayakkabısı nasıl olmalı?", "o": ["Bol ve rahat", "Rahatsız etmeyecek kadar sıkı", "Bir numara büyük", "Çorapla iki numara büyük"], "c": 1}, {"t": "derece", "q": "YDS sisteminde 5.10 sonrası zorluk nasıl artar?", "o": ["Rakam 6 olur", "Harf eklenir: a, b, c, d", "Renk koduna geçilir", "Yüzdeyle gösterilir"], "c": 1}, {"t": "derece", "q": "V0–V17 ölçeği hangisinin derecesidir?", "o": ["Sportif rota", "Bouldering", "Big wall", "Buz tırmanışı"], "c": 1}, {"t": "derece", "q": "UIAA sistemi nasıl ilerler?", "o": ["Harflerle", "Romen rakamlarıyla (I–XII)", "Yıldızlarla", "Metreyle"], "c": 1}, {"t": "derece", "q": "Salon dereceleri kaya derecelerinden neden farklı hissedilir?", "o": ["Salonlar hep yanlış derecelendirir", "Kaya koşulları ve stil farklılığından", "Dereceler rastgeledir", "Sadece hava yüzünden"], "c": 1}, {"t": "derece", "q": "Üzerinde çalışılan, henüz serbest çıkılmamış rotaya ne denir?", "o": ["Proje", "Kulvar", "Ankraj", "Traverse"], "c": 0}, {"t": "derece", "q": "Fransız sisteminde orta seviye bir not hangisidir?", "o": ["2b", "6a", "9c", "V4"], "c": 1}];
+  const TOPICS = {"mix": "Karışık", "teknik": "Teknik", "guvenlik": "Emniyet", "ekipman": "Ekipman", "derece": "Dereceler"};
   const qStep = document.getElementById('quizStep');
   const qQ = document.getElementById('quizQ');
   const qOpts = document.getElementById('quizOpts');
   const qMsg = document.getElementById('quizMsg');
   const qStart = document.getElementById('quizStart');
   const qClose = document.getElementById('quizClose');
-  let qi = 0, score = 0, active = false, locked = false;
-  const stepPct = 100 / QUIZ.length;
-  function moveClimber(){
-    cpRoot.classList.add('quiz');
-    cpClimber.style.bottom = (score * stepPct) + '%';
-    cpRoot.classList.toggle('topped', score === QUIZ.length);
+  const qSetup = document.getElementById('quizSetup');
+  const qTopics = document.getElementById('qzTopics');
+  const qCounts = document.getElementById('qzCounts');
+  const qzFill = document.getElementById('qzFill');
+  const qzClimber = document.getElementById('qzClimber');
+  const quizCard = document.getElementById('quizCard');
+  let topic = 'mix', want = 10, set = [], qi = 0, score = 0, active = false, locked = false;
+  const shuf = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+  function chip(parent, val, label){
+    const b = document.createElement('button');
+    b.textContent = label;
+    if (val === topic || val === want) b.classList.add('sel');
+    b.addEventListener('click', () => {
+      [...parent.children].forEach(c => c.classList.remove('sel'));
+      b.classList.add('sel');
+      if (typeof val === 'number') want = val; else topic = val;
+    });
+    parent.appendChild(b);
+  }
+  Object.entries(TOPICS).forEach(([k, l]) => chip(qTopics, k, l));
+  [5, 10, 15].forEach(n => chip(qCounts, n, String(n)));
+  function moveQz(){
+    const pct = set.length ? score / set.length * 100 : 0;
+    qzFill.style.height = pct + '%';
+    qzClimber.style.bottom = pct + '%';
+    document.querySelectorAll('.qz-dot').forEach((d, i) => d.classList.toggle('on', i < score));
   }
   function render(){
-    qStep.textContent = (qi + 1) + ' / ' + QUIZ.length + ' · ' + score + ' puan';
-    const item = QUIZ[qi];
-    qQ.textContent = item.q;
+    qStep.textContent = (qi + 1) + ' / ' + set.length + ' · ' + score + ' puan';
+    const it = set[qi];
+    qQ.textContent = it.q;
     qOpts.innerHTML = '';
-    item.o.forEach((opt, i) => {
+    it.o.forEach((o, i) => {
       const b = document.createElement('button');
-      b.textContent = opt;
+      b.textContent = o;
       b.addEventListener('click', () => answer(i, b));
       qOpts.appendChild(b);
     });
@@ -2187,54 +2241,79 @@
   function answer(i, btn){
     if (!active || locked) return;
     locked = true;
-    const ok = i === QUIZ[qi].c;
+    const ok = i === set[qi].c;
     btn.classList.add(ok ? 'ok' : 'bad');
-    if (!ok) qOpts.children[QUIZ[qi].c].classList.add('ok');
-    score = Math.max(0, Math.min(QUIZ.length, score + (ok ? 1 : -1)));
+    if (!ok) qOpts.children[set[qi].c].classList.add('ok');
+    score = Math.max(0, Math.min(set.length, score + (ok ? 1 : -1)));
     qMsg.textContent = ok ? 'Doğru! Bir adım yukarı.' : 'Yanlış. Bir adım aşağı.';
-    moveClimber();
-    setTimeout(() => { qi += 1; qi < QUIZ.length ? render() : finish(); }, 950);
+    moveQz();
+    setTimeout(() => { qi += 1; qi < set.length ? render() : finish(); }, 950);
   }
   function startQuiz(){
-    active = true; qi = 0; score = 0;
+    const pool = topic === 'mix' ? QBANK.slice() : QBANK.filter(q => q.t === topic);
+    set = shuf(pool).slice(0, Math.min(want, pool.length));
+    if (!set.length) return;
+    active = true; quizMode = true; qi = 0; score = 0;
     qStart.style.display = 'none';
+    qSetup.style.display = 'none';
+    document.querySelectorAll('.qz-dot').forEach(d => d.remove());
+    const track = document.querySelector('.qz-track');
+    for (let i = 0; i < set.length; i++) {
+      const d = document.createElement('i');
+      d.className = 'qz-dot';
+      d.style.bottom = ((i + 1) / set.length * 100) + '%';
+      track.appendChild(d);
+    }
+    quizCard.classList.add('running');
+    cpRoot.classList.add('off');
     render();
-    moveClimber();
+    moveQz();
   }
   function finish(){
     active = false;
-    qStep.textContent = 'Sonuç: ' + score + ' / ' + QUIZ.length;
-    qQ.textContent = score === QUIZ.length ? 'Zirve! Kusursuz bir tırmanış.' : score >= QUIZ.length * 0.7 ? 'Güçlü tırmanış — zirveye çok yakınsın.' : score >= QUIZ.length * 0.4 ? 'Sağlam deneme — birkaç bölümü tekrar et.' : 'Duvar bu sefer kazandı — rehbere geri dön!';
+    quizCard.classList.remove('running');
+    quizCard.classList.add('done');
+    qStep.textContent = 'Sonuç: ' + score + ' / ' + set.length;
+    qQ.textContent = score === set.length ? 'Zirve! Kusursuz bir tırmanış.' : score >= set.length * 0.7 ? 'Güçlü tırmanış — zirveye çok yakınsın.' : score >= set.length * 0.4 ? 'Sağlam deneme — birkaç konuyu tekrar et.' : 'Duvar bu sefer kazandı — rehbere geri dön!';
     qOpts.innerHTML = '';
     qMsg.textContent = '';
     qStart.style.display = '';
+    qStart.textContent = 'Yeniden';
   }
-  function endQuiz(){
-    quizMode = false;
-    cpRoot.classList.remove('quiz','topped');
+  function resetToSetup(){
+    active = false; quizMode = false;
+    quizCard.classList.remove('running', 'done', 'falling');
+    cpRoot.classList.remove('off', 'topped', 'quiz');
+    qSetup.style.display = '';
+    qOpts.innerHTML = '';
+    qMsg.textContent = '';
+    qQ.textContent = 'Konu ve soru sayısını seç, tırmanış başlasın.';
+    qStep.textContent = '—';
+    qStart.style.display = '';
+    qStart.textContent = 'Testi Başlat';
     onScroll();
   }
   function quitFall(){
-    if (active && qi < QUIZ.length) {
+    if (active && qi < set.length) {
       active = false;
       qOpts.innerHTML = '';
       qMsg.textContent = 'Test yarıda bırakıldı — tırmanıcı düştü.';
-      const start = parseFloat(cpClimber.style.bottom) || 0;
+      const start = parseFloat(qzClimber.style.bottom) || 0;
       const t0 = performance.now(), D = 700;
-      cpRoot.classList.remove('quiz');
-      cpRoot.classList.add('falling');
+      quizCard.classList.remove('running');
+      quizCard.classList.add('falling');
+      qzClimber.classList.add('fall');
       (function drop(t){
         const k = Math.min(1, (t - t0) / D), e = k * k;
-        cpClimber.style.bottom = (start * (1 - e)) + '%';
+        qzClimber.style.bottom = (start * (1 - e)) + '%';
         if (k < 1) requestAnimationFrame(drop);
         else {
-          cpRoot.classList.remove('falling');
+          qzClimber.classList.remove('fall');
           qQ.textContent = 'Düştü! Hazır olduğunda yeniden dene.';
-          qStart.style.display = '';
-          endQuiz();
+          resetToSetup();
         }
       })(t0);
-    } else endQuiz();
+    } else resetToSetup();
   }
   qStart.addEventListener('click', startQuiz);
   qClose.addEventListener('click', quitFall);
