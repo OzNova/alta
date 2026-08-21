@@ -134,6 +134,21 @@
   figure.photo figcaption b{opacity:1;}
   .photo-strip{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
   @media(max-width:700px){.photo-strip{grid-template-columns:1fr}}
+  .brand-rule{height:3px;background:linear-gradient(90deg,var(--c1),var(--c2) 52%,var(--c3));}
+  ::selection{background:var(--c2);color:#fff;}
+  .eyebrow::before{content:"";display:inline-block;width:18px;height:2px;border-radius:2px;background:currentColor;opacity:.85;margin-right:10px;vertical-align:middle;}
+  .hero{position:relative;overflow:hidden;}
+  .hero::after{
+    content:"";position:absolute;right:-50px;top:50%;transform:translateY(-50%);
+    width:min(400px,34vw);aspect-ratio:100/110;pointer-events:none;opacity:.06;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 110'%3E%3Cpolygon points='50,15 15,95 32,95 50,52 68,95 85,95' fill='%238AA29E'/%3E%3Crect x='30' y='70' width='40' height='5' fill='%23F7F5EF'/%3E%3Ccircle cx='50' cy='35' r='4' fill='%23F7F5EF'/%3E%3C/svg%3E") no-repeat center/contain;
+  }
+  .hero .hero-inner{position:relative;z-index:1;}
+  .brand-icon circle{transition:transform .35s ease;}
+  .brand:hover .brand-icon circle{transform:translateY(-6px);}
+  .foot-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:44px;}
+  .foot-brand svg{width:26px;height:29px;}
+  .foot-brand span{font-family:'Inter',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.32em;color:var(--inverse-text);}
   .cp-climber{
     position:absolute;left:50%;bottom:0;width:34px;height:46px;z-index:3;
     transform:translate(-50%,40%);
@@ -853,6 +868,7 @@
 <script>try{var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(!t&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)t="dark";if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
+  <div class="brand-rule" aria-hidden="true"></div>
 
 <a class="skip" href="#content">Skip to content</a>
 <div class="climb-progress" id="climbProgress" aria-hidden="true">
@@ -2031,6 +2047,7 @@
     </section></main>
 </div>
 
+<div class="brand-rule" aria-hidden="true"></div>
 <footer class="footer">
   <div class="container reveal">
     <span class="eyebrow" style="color:var(--c3)">Before the Summit</span>
@@ -2043,6 +2060,10 @@
       <li>Audit your gear at season’s end: log the age of your rope, carabiners and helmet.</li>
       <li>Remember crag ethics: call out loose rock, share routes, leave no trace.</li>
     </ul>
+    <div class="foot-brand" aria-hidden="true">
+      <svg viewBox="0 0 100 110" aria-hidden="true"><polygon points="50,15 15,95 32,95 50,52 68,95 85,95" style="fill:#8AA29E"/><rect x="30" y="70" width="40" height="5" style="fill:var(--inverse)"/><circle cx="50" cy="35" r="4" style="fill:#E6E8E6"/></svg>
+      <span>ALTA</span>
+    </div>
     <div class="fine">
       <span>ALTA — ROCK CLIMBING GUIDE · FROM TECHNIQUE TO GEAR, FROM MIND TO ROCK</span>
       <span>MASTER THE WALL. MIND THE FALL · 19 SECTIONS · 4 PARTS · CONCEPT BY OZAN</span>
