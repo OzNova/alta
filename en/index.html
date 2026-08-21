@@ -222,6 +222,15 @@
   .bflag{fill:var(--c3);opacity:.55;transition:opacity .3s ease;}
   .bflagpole{stroke:#F7F5EF;stroke-width:1;opacity:.7;}
   .beta-stage.done .bflag{animation:cp-pop .6s ease;opacity:1;}
+  .beta-stage::before{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(10,12,16,.74),rgba(10,12,16,.42));}
+  .bsvg{z-index:1;}
+  .bbanner{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:2;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#F7F5EF;background:rgba(10,12,16,.78);border:1px solid var(--c3);border-radius:999px;padding:.32rem .85rem;white-space:nowrap;}
+  .bopt circle{stroke-width:2;}
+  .bhold{opacity:1;stroke:#10131A;stroke-width:.8;}
+  .bmark{font-family:'JetBrains Mono',monospace;font-size:5px;font-weight:700;fill:#E46B5B;text-anchor:middle;}
+  .bstart{fill:none;stroke:#7fb069;stroke-width:1.4;stroke-dasharray:2.4 2;transform-box:fill-box;transform-origin:center;animation:bstartspin 3s linear infinite;}
+  @keyframes bstartspin{to{transform:rotate(360deg)}}
+  @media (max-width:600px){.bbanner{white-space:normal;text-align:center;max-width:92%;font-size:.58rem;border-radius:12px;line-height:1.5;}}
   .bdust{fill:rgba(230,232,230,.55);pointer-events:none;animation:bdust .7s ease forwards;}
   @keyframes bdust{to{r:8;opacity:0}}
   .krope{fill:none;stroke:var(--c1);stroke-width:3.4;stroke-linecap:round;transition:stroke-dashoffset .5s ease;}
@@ -2254,6 +2263,8 @@
           <p>Three holds blink on the sketched problem: which one is the next move of the line? Right call moves the climber up; wrong call takes the 2-second ride.</p>
         </div>
         <div class="beta-stage reveal" id="betaStage" style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Climbing_wall_20211103_145408.jpg?width=1600')">
+          <div class="bbanner reveal" id="bbanner"></div>
+          
           <svg class="bsvg" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <rect class="bmat" x="0" y="82" width="160" height="8"/>
             <polyline id="bline" class="bline" points=""/>
@@ -2506,6 +2517,7 @@
     const bTry = document.getElementById('betaTryLbl');
     const bMsg = document.getElementById('betaMsg');
     const bHint = document.getElementById('betaHint');
+    const bBan = document.getElementById('bbanner');
     const bReplay = document.getElementById('betaReplay');
     const H = [[19,77],[38,67],[61,72],[48,54],[74,59],[93,50],[70,43],[99,36],[83,29],[112,23],[134,16],[125,9]];
     const P = [0,2,3,5,6,8,10,11];
@@ -2522,7 +2534,17 @@
     function round(){
       clearOpts();
       locked = false;
-      bMove.textContent = 'Move ' + (k + 1) + ' / ' + (P.length - 1);
+      if (!pts.length) {
+        bBan.textContent = 'Pick the next hold on the line';
+        const sr = el('circle');
+        sr.setAttribute('class', 'bstart');
+        sr.setAttribute('cx', H[P[0]][0]);
+        sr.setAttribute('cy', H[P[0]][1]);
+        sr.setAttribute('r', '7.6');
+        STAGE.querySelector('svg').appendChild(sr);
+      } else {
+        bBan.textContent = 'Move ' + (k + 1) + ' / ' + (P.length - 1);
+      }
       const nxt = P[k + 1];
       const decoys = [];
       const pool = OFF.slice();
@@ -2542,7 +2564,7 @@
       });
     }
     function done(){
-      bMsg.textContent = 'Summit! You read the route in one go.';
+      bMsg.textContent = 'Summit! You read the route in one go. (' + tries + ' \u2715)';
       bHint.textContent = '';
       bReplay.style.display = '';
       STAGE.classList.add('done');
@@ -2565,9 +2587,8 @@
         void BC.getBoundingClientRect();
         BC.style.transition = '';
         STAGE.classList.remove('shake');
-        bMsg.textContent = 'You fell! That hold was not on the line.';
-        locked = false;
-        setTimeout(() => { if (bMsg.textContent === 'You fell! That hold was not on the line.') bMsg.textContent = ''; }, 900);
+                locked = false;
+        setTimeout(() => { bMsg.textContent = ''; }, 1500);
       }, 900);
     }
     function pick(g, hi){
@@ -2596,6 +2617,13 @@
         tries++;
         bTry.textContent = 'Attempts ' + tries;
         g.classList.add('bad');
+        const mk = el('text');
+        mk.setAttribute('class', 'bmark');
+        mk.setAttribute('x', H[hi][0]);
+        mk.setAttribute('y', H[hi][1] + 2);
+        mk.textContent = '\u2715';
+        STAGE.querySelector('svg').appendChild(mk);
+        bMsg.textContent = 'Off route! Try again';
         STAGE.classList.add('shake');
         setTimeout(fallSeq, 250);
         setTimeout(() => g.classList.remove('bad'), 1400);
@@ -2609,6 +2637,7 @@
       STAGE.classList.remove('done');
       LINE.setAttribute('points', '');
       STAGE.querySelectorAll('.bnum').forEach(n => n.remove());
+      STAGE.querySelectorAll('.bmark,.bstart').forEach(n => n.remove());
       setClimb(0);
       round();
     });
