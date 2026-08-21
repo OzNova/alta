@@ -91,15 +91,48 @@
   .chapter{scroll-margin-top:96px;}
 
   /* ============ PROGRESS BAR ============ */
-  .progress{
-    position:fixed;top:0;left:0;right:0;height:3px;z-index:150;
-    background:transparent;pointer-events:none;
+  .climb-progress{
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);
+    height:min(56vh,520px);width:34px;z-index:150;pointer-events:none;
   }
-  .progress i{
-    display:block;height:100%;width:0;
-    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));
-    transition:width .08s linear;
+  .cp-track{
+    position:absolute;left:50%;top:14px;bottom:14px;width:4px;
+    transform:translateX(-50%);border-radius:99px;background:var(--border);
   }
+  .cp-fill{
+    position:absolute;left:0;bottom:0;width:100%;height:0;border-radius:99px;
+    background:linear-gradient(0deg,var(--c1),var(--c2) 55%,var(--c3));
+  }
+  .cp-bolt{
+    position:absolute;left:50%;bottom:0;width:8px;height:8px;border-radius:50%;
+    transform:translate(-50%,50%);background:var(--bg);border:2px solid var(--border);
+    transition:border-color .3s ease,background-color .3s ease;z-index:2;
+  }
+  .cp-bolt.on{border-color:var(--c2);background-color:var(--c2);}
+  .cp-flag{
+    position:absolute;top:-17px;left:50%;width:15px;height:15px;
+    transform:translateX(-50%);color:var(--border);transition:color .3s ease;z-index:2;
+  }
+  .cp-flag path{fill:currentColor;}
+  .climb-progress.topped .cp-flag{color:var(--c3);animation:cp-pop .6s ease;}
+  @keyframes cp-pop{45%{transform:translateX(-50%) scale(1.45)}}
+  .cp-climber{
+    position:absolute;left:50%;bottom:0;width:34px;height:46px;z-index:3;
+    transform:translate(-50%,40%);
+  }
+  .cp-climber svg{display:block;width:100%;height:100%;overflow:visible;}
+  .cp-head{fill:var(--c1);}
+  .cp-body{stroke:var(--c2);stroke-width:5;stroke-linecap:round;fill:none;}
+  .cp-limb{stroke:var(--text);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .cp-ga,.cp-gb,.cp-gl1,.cp-gl2{transform-box:fill-box;}
+  .cp-ga{transform-origin:0 100%;animation:cp-a 1.15s ease-in-out infinite alternate;}
+  .cp-gb{transform-origin:0 0;animation:cp-b 1.15s ease-in-out infinite alternate;animation-delay:-.55s;}
+  .cp-gl1{transform-origin:0 0;animation:cp-b 1.15s ease-in-out infinite alternate;animation-delay:-.3s;}
+  .cp-gl2{transform-origin:100% 0;animation:cp-a 1.15s ease-in-out infinite alternate;animation-delay:-.85s;}
+  @keyframes cp-a{from{transform:rotate(-11deg)}to{transform:rotate(7deg)}}
+  @keyframes cp-b{from{transform:rotate(9deg)}to{transform:rotate(-9deg)}}
+  @media(max-width:900px){.climb-progress{display:none}}
+  @media(prefers-reduced-motion:reduce){.cp-ga,.cp-gb,.cp-gl1,.cp-gl2{animation:none}}
 
   /* ============ TOPBAR ============ */
   .topbar{
@@ -746,7 +779,7 @@
     .topo-strip .wp{opacity:1;animation:none;}
   }
   @media print{
-    .topbar,.toc,.backtop,.progress,.theme-btn,.skip{display:none !important;}
+    .topbar,.toc,.backtop,.climb-progress,.theme-btn,.skip{display:none !important;}
     .page{display:block;padding:0;}
     body{background:#fff;}
   }
@@ -774,7 +807,7 @@
       --text:#111;--text-soft:#333;--c1:#33587A;--c2:#A6402E;--c3:#8a6a1f;--c4:#3F7A6E;
       --shadow:none;
     }
-    .topbar,.progress,.backtop,.skip{display:none !important;}
+    .topbar,.climb-progress,.backtop,.skip{display:none !important;}
     body{background:#fff;}
     section{scroll-margin-top:0;}
     .reveal{opacity:1 !important;transform:none !important;}
@@ -793,7 +826,22 @@
 <body>
 
 <a class="skip" href="#content">Skip to content</a>
-<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+<div class="climb-progress" id="climbProgress" aria-hidden="true">
+      <div class="cp-track">
+        <svg class="cp-flag" viewBox="0 0 20 20"><path d="M10 2 L17 18 H3 Z"/></svg>
+        <div class="cp-fill" id="cpFill"></div>
+        <div class="cp-climber" id="cpClimber">
+          <svg viewBox="0 0 36 52">
+            <circle class="cp-head" cx="17" cy="6" r="4.5"/>
+            <path class="cp-body" d="M17 11 L15 27"/>
+            <g class="cp-ga"><path class="cp-limb" d="M16 15 L28 8"/></g>
+            <g class="cp-gb"><path class="cp-limb" d="M16 17 L27 23"/></g>
+            <g class="cp-gl1"><path class="cp-limb" d="M15 27 L23 34 L20 42"/></g>
+            <g class="cp-gl2"><path class="cp-limb" d="M15 27 L9 45"/></g>
+          </svg>
+        </div>
+      </div>
+    </div>
 
 <nav class="topbar">
   <div class="topbar-inner">
@@ -1984,11 +2032,24 @@
     try { localStorage.setItem('theme', next); } catch (e) {}
   });
 
-  const progress = document.getElementById('progressBar');
+  const cpRoot = document.getElementById('climbProgress');
+  const cpFill = document.getElementById('cpFill');
+  const cpClimber = document.getElementById('cpClimber');
+  const cpBolts = [0.25, 0.5, 0.75].map(p => {
+    const b = document.createElement('i');
+    b.className = 'cp-bolt';
+    b.style.bottom = (p * 100) + '%';
+    cpRoot.querySelector('.cp-track').appendChild(b);
+    return { p, el: b };
+  });
   const backtop = document.getElementById('backtop');
   const onScroll = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    progress.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+    const pr = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    cpFill.style.height = (pr * 100) + '%';
+    cpClimber.style.bottom = (pr * 100) + '%';
+    cpBolts.forEach(b => b.el.classList.toggle('on', pr >= b.p - 0.02));
+    cpRoot.classList.toggle('topped', pr >= 0.99);
     backtop.classList.toggle('show', window.scrollY > 600);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
