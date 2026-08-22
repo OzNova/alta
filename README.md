@@ -1,29 +1,38 @@
-# ALTA — Rock Climbing Guide
+# ALTA — Master the Wall. Mind the Fall.
 
 Live: **https://oznova.github.io/alta/**
 
-A single-file, dependency-free rock climbing guide in Turkish and English.
+A dependency-free, single-file rock climbing concept site + guide in Turkish and English. No build step, no frameworks — inline CSS/JS only.
 
-- `kaya-tirmanisi-rehberi_2.html` — Türkçe sürüm
-- `rock-climbing-guide-en.html` — English version
+## Structure
 
-Both files are fully self-contained: inline CSS/JS, embedded knot diagrams, no build step. Open directly in a browser.
+| Path | What it is |
+|---|---|
+| `index.html` | Concept site (TR): hero, Efsaneler & Kültür photo cards, İnteraktif Modüller launcher (TR/EN toggle), Mind The Fall safety cards (anonymized), Founder Profile |
+| `guide/index.html` | Full guide — Türkçe (19 sections, 4 parts) |
+| `en/index.html` | Full guide — English |
 
-## Contents (19 sections, 4 parts)
+## Interactive modules
 
-1. **Start** — climbing types, grade systems, 12-month roadmap
-2. **Technique** — basics, hold types, advanced skills, falling
-3. **Safety** — belay, knots, rope management, gear
-4. **Progress** — training, mental game, injuries, crags, FAQ, ethics, glossary
+- **Bilgi Testi / Knowledge Quiz** — 24-question bank, topic & count picker, animated climber
+- **Beta Challenge** — pick the next hold on a sketched problem; wrong move = fall
+- **Mini Oyunlar / Mini Games**:
+  - *Knot Workshop* — 6 knots with hand-drawn SVG rope animation, per-knot best times
+  - *Gear Memory* — photo ↔ name pairs using real equipment photos
 
 ## Features
 
 - Light/dark theme with persistence
 - Grade converter (French / UIAA / YDS / V-scale)
-- Interactive checklist for gear
-- Language switcher between TR ↔ EN
+- Interactive gear checklist
+- TR ↔ EN language switcher (guide) and per-section TR/EN toggle (İnteraktif Modüller)
+- Photos hotlinked from Wikimedia Commons (`Special:FilePath`, width-parameterized); text/initial fallbacks if offline
+
+## Notes
+
+- Safety Module ("Mind The Fall") tells accident stories without naming individuals — role titles only.
+- All content is educational; climbing is dangerous. Take a course, check your knot.
 
 ---
 
 MASTER THE WALL. MIND THE FALL · Concept by Ozan
-- Kavramsal ana sayfa: kok (index.html) · Rehber TR: /guide/ · Rehber EN: /en/
