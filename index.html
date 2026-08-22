@@ -231,6 +231,10 @@ html[data-theme="light"] .cbtn.snap{color:var(--bg);}
 .acard p{color:var(--dim);font-size:.85rem;line-height:1.6;flex:1;}
 .acard .go{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.2em;color:var(--ice);text-transform:uppercase;}
 .acard .go::after{content:' ↗';transition:letter-spacing .3s;}
+.ars-head-top{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.lang-sw{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;}
+.lang-sw button{background:none;border:none;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.18em;padding:.4rem .85rem;cursor:pointer;transition:background .25s ease,color .25s ease;}
+.lang-sw button.on{background:var(--ice);color:#0F1115;}
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--line);padding:60px clamp(18px,5vw,64px) 40px;position:relative;overflow:hidden;}
@@ -321,7 +325,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
 
 <section class="section" id="ozan">
   <div class="sec-head reveal">
-    <span class="kick">Founder Profile</span>
+    <span class="kick" lang="en">Founder Profile</span>
     <h2>Ozan<span style="color:var(--ice)">.</span></h2>
   </div>
   <div class="about-grid">
@@ -337,7 +341,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     </aside>
     <div class="bio reveal">
       <h3>Tırmanış bir spor değil; <em>zihinsel odak, teknik disiplin ve sınırları zorlama sanatı.</em></h3>
-      <p>ALTA’yı, kayadaki teknik mükemmelliği ve emniyet bilincini modern bir estetikle birleştirmek için kurdum. Bu sayfa bir portfolyo değil; dağdan, duvardan ve düşüşlerden öğrenilmiş <strong>derslerin arşivi</strong>.</p>
+      <p>ALTA’yı, kayadaki teknik mükemmelliği ve emniyet bilincini modern bir estetikle birleştirmek için kurdum. Bu sayfa bir portfolyo değil; dağdan, duvardan ve düşüşlerden öğrenilmiş <strong>derslerin arşividir</strong>.</p>
       <p>Burada bulacağın her şey — rota çözümleri, ekipman bilgisi, efsanelerin hikâyeleri ve kazalardan çıkarılan emniyet dersleri — aynı ilkeye bağlı: <strong>yukarı çıkarken düşün, düşerken fark et.</strong></p>
       <span class="philo"><i></i>Master the Wall. Mind the Fall.</span>
     </div>
@@ -346,7 +350,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
 
 <section class="section" id="culture" style="max-width:1400px;">
   <div class="sec-head reveal">
-    <span class="kick">Popular Culture</span>
+    <span class="kick" lang="en">Popular Culture</span>
     <h2>Efsaneler &amp;<br>Kültür</h2>
     <p>Hızlı tüketim formatında: kaydırmalı kartlarla tırmanış kültürünün ikonik anları.</p>
   </div>
@@ -359,7 +363,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       <div class="cbody">
         <h3>Karavan Hayatı</h3>
         <p>Oscar ödüllü <em>Free Solo</em> belgeseliyle dünya çapında tanınan Alex Honnold, milyonluk sponsorluklara rağmen eski bir minibüste yaşadı. Karavanda yere düşen yiyecekleri bile ziyan etmeyen katıksız bir minimalist.</p>
-        <span class="tagline">Alex Honnold · Minimalism</span>
+        <span class="tagline" lang="en">Alex Honnold · Minimalism</span>
       </div>
     </article>
     <article class="ccard">
@@ -370,7 +374,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       <div class="cbody">
         <h3>Taipei 101 Çılgınlığı</h3>
         <p>Alex Honnold, 2026 yılında Tayvan’daki 101 katlı Taipei 101 gökdelenine ipeksiz (serbest solo) tırmanarak dünya spor ve magazin tarihine geçti.</p>
-        <span class="tagline">Free Solo · 101 Floors · 2026</span>
+        <span class="tagline" lang="en">Free Solo · 101 Floors · 2026</span>
       </div>
     </article>
     <article class="ccard">
@@ -381,7 +385,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       <div class="cbody">
         <h3>Kravatla Tırmanış</h3>
         <p>İlk çağdaş tırmanış denemelerinde İngiliz soylularının dağlara takım elbise ve kravatla çıkması, günümüzün neon tayt modasının yanında nostaljik ve komik bir detay.</p>
-        <span class="tagline">Alpine Club · Victorian Era</span>
+        <span class="tagline" lang="en">Alpine Club · Victorian Era</span>
       </div>
     </article>
 
@@ -393,7 +397,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       <div class="cbody">
         <h3>47 Günde El Capitan</h3>
         <p>Warren Harding’in ekibi, Yosemite’deki El Capitan’ın <em>The Nose</em> hattını 1958’de 47 güne yayılan itici halatlarla geçti. Duvar tırmanışının (big wall) doğduğu an sayılır.</p>
-        <span class="tagline">The Nose · First Ascent · 1958</span>
+        <span class="tagline" lang="en">The Nose · First Ascent · 1958</span>
       </div>
     </article>
     <article class="ccard">
@@ -404,7 +408,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       <div class="cbody">
         <h3>“Beta” Kelimesinin Doğuşu</h3>
         <p>1980’ler Amerikası’nda rotanın çözülmüş halinin videoya çekilip elden ele dolaştırılmasına “beta tape” deniyordu. Bugün tüm dünyada kullanılan <em>beta</em> terimi oradan geldi.</p>
-        <span class="tagline">Beta Tapes · VHS Era · 1980s</span>
+        <span class="tagline" lang="en">Beta Tapes · VHS Era · 1980s</span>
       </div>
     </article>
     <article class="ccard">
@@ -415,7 +419,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       <div class="cbody">
         <h3>“It Goes, Boys!”</h3>
         <p>Lynn Hill, 1993’te The Nose’u iptesiz serbest tırmanan ilk insan oldu; tepedeki meydan okuyucu kalabalığa bu cümleyle karşılık verdi. Bir yıl sonra aynı hattı tek günde tamamladı.</p>
-        <span class="tagline">Lynn Hill · Free Nose · 1993</span>
+        <span class="tagline" lang="en">Lynn Hill · Free Nose · 1993</span>
       </div>
     </article>
   </div>
@@ -424,7 +428,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
 <section class="section fall-sec" id="fall" style="max-width:none;">
   <div style="max-width:1240px;margin:0 auto;">
     <div class="sec-head reveal">
-      <span class="kick">Safety Module</span>
+      <span class="kick" lang="en">Safety Module</span>
       <h2>Mind The <span style="color:var(--red)">Fall</span></h2>
       <p>Tırmanış tarihinin trajik kayıpları ve her birinden çıkan dersler. Kartların üzerine gel — ip seni yakalasın.</p>
     </div>
@@ -433,7 +437,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
         <div class="rail"><span class="bolt"></span><span class="frope"></span>
           <svg class="fclimb" width="15" height="18" viewBox="0 0 15 18"><circle cx="7.5" cy="3" r="2.4" fill="var(--txt)"/><path d="M7.5 6v5M7.5 11l-3 5M7.5 11l3 5M7.5 7.5L3.5 5M7.5 7.5l4-2" stroke="var(--txt)" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
         </div>
-        <span class="fbadge">Mind The Fall</span>
+        <span class="fbadge" lang="en">Mind The Fall</span>
         <div class="fmeta"><span class="fyear">2019</span><span class="fcause">İpsiz İniş</span></div>
         <h3>Profesyonel Tırmanıcı</h3>
         <p>İpsiz tırmanışın tanınan isimlerindendi. Meksika’da ipli iniş yaparken (simul-rappelling) ipin ucuna güvenlik düğümü atılmadığı için 300 metreden düşerek yaşamını yitirdi.</p>
@@ -443,7 +447,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
         <div class="rail"><span class="bolt"></span><span class="frope"></span>
           <svg class="fclimb" width="15" height="18" viewBox="0 0 15 18"><circle cx="7.5" cy="3" r="2.4" fill="var(--txt)"/><path d="M7.5 6v5M7.5 11l-3 5M7.5 11l3 5M7.5 7.5L3.5 5M7.5 7.5l4-2" stroke="var(--txt)" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
         </div>
-        <span class="fbadge">Mind The Fall</span>
+        <span class="fbadge" lang="en">Mind The Fall</span>
         <div class="fmeta"><span class="fyear">2026</span><span class="fcause">Big Wall</span></div>
         <h3>Hız Rekoru Tırmanıcısı</h3>
         <p>Yosemite’deki ikonik El Capitan duvarında hız rekorları kıran deneyimli bir tırmanıcı, “Lurking Fear” rotasındaki kazada yaşamını yitirdi.</p>
@@ -453,17 +457,17 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
         <div class="rail"><span class="bolt"></span><span class="frope"></span>
           <svg class="fclimb" width="15" height="18" viewBox="0 0 15 18"><circle cx="7.5" cy="3" r="2.4" fill="var(--txt)"/><path d="M7.5 6v5M7.5 11l-3 5M7.5 11l3 5M7.5 7.5L3.5 5M7.5 7.5l4-2" stroke="var(--txt)" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
         </div>
-        <span class="fbadge">Mind The Fall</span>
+        <span class="fbadge" lang="en">Mind The Fall</span>
         <div class="fmeta"><span class="fyear">2009</span><span class="fcause">Serbest Solo</span></div>
         <h3>Serbest Solo Efsanesi</h3>
         <p>Kendi antrenman rotasında bastığı bir kaya bloğunun kopması sonucu düşmüştü.</p>
-        <p class="flesson">Ders: En tecrübeli el bile taşı kontrol eder — rock over, test et.</p>
+        <p class="flesson">Ders: En tecrübeli el bile taşı kontrol eder — bloğu salla, sağlam mı bak.</p>
       </article>
       <article class="fcard reveal" tabindex="0">
         <div class="rail"><span class="bolt"></span><span class="frope"></span>
           <svg class="fclimb" width="15" height="18" viewBox="0 0 15 18"><circle cx="7.5" cy="3" r="2.4" fill="var(--txt)"/><path d="M7.5 6v5M7.5 11l-3 5M7.5 11l3 5M7.5 7.5L3.5 5M7.5 7.5l4-2" stroke="var(--txt)" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
         </div>
-        <span class="fbadge">Mind The Fall</span>
+        <span class="fbadge" lang="en">Mind The Fall</span>
         <div class="fmeta"><span class="fyear">2003</span><span class="fcause">Kaya Düşmesi</span></div>
         <h3>Kanyon Tırmanıcısı</h3>
         <p>Utah’ta üzerine dev bir kaya düşüp kolu sıkıştı. 5 gün mahsur kaldıktan sonra kendi kolunu çakıyla keserek kurtuldu (<em>127 Saat</em> filmi).</p>
@@ -475,28 +479,33 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
 
 <section class="section" id="arsenal">
   <div class="sec-head reveal">
-    <span class="kick">Interactive Arsenal</span>
-    <h2>Sadece Okuma,<br>Deneyimleme</h2>
-    <p>Rehberin içinde çalışan üç interaktif modül: test, fotoğraf üstünde beta okuma ve mini oyunlar.</p>
+    <div class="ars-head-top">
+    <span class="kick" lang="en" data-tr="İnteraktif Modüller" data-en="Interactive Arsenal">Interactive Arsenal</span>
+    <div class="lang-sw" role="group" aria-label="Dil seçimi">
+      <button type="button" id="arsTr" class="on">TR</button><button type="button" id="arsEn">EN</button>
+    </div>
+  </div>
+    <h2 data-tr="Sadece Okuma,&lt;br&gt;Deneyimleme" data-en="Not Just Reading,&lt;br&gt;Experiencing">Sadece Okuma,<br>Deneyimleme</h2>
+    <p data-tr="Rehberin içinde çalışan üç interaktif modül: test, fotoğraf üstünde beta okuma ve mini oyunlar." data-en="Three live modules inside the guide: a quiz, photo-based beta reading and mini games.">Rehberin içinde çalışan üç interaktif modül: test, fotoğraf üstünde beta okuma ve mini oyunlar.</p>
   </div>
   <div class="arsenal-grid">
     <a class="acard reveal" href="guide/#test">
       <span class="num">20</span>
-      <h3>Bilgi Testi</h3>
-      <p>24 soruluk bankadan konu ve soru sayısı seç; tırmanan çubukta adım adım yüksel.</p>
-      <span class="go">Testi Başlat</span>
+      <h3 data-tr="Bilgi Testi" data-en="Knowledge Quiz">Bilgi Testi</h3>
+      <p data-tr="24 soruluk bankadan konu ve soru sayısı seç; tırmanan çubukta adım adım yüksel." data-en="Pick a topic and count from the 24-question bank; watch the climber step up.">24 soruluk bankadan konu ve soru sayısı seç; tırmanan çubukta adım adım yüksel.</p>
+      <span class="go" data-tr="Testi Başlat" data-en="Start the Quiz">Testi Başlat</span>
     </a>
     <a class="acard reveal" href="guide/#beta">
       <span class="num">21</span>
-      <h3>Beta Challenge</h3>
-      <p>Çizili problemde sıradaki tutuşu bul; yanlış hamle 2 saniyelik düşüş demek.</p>
-      <span class="go">Rotayı Çöz</span>
+      <h3 lang="en" data-tr="Beta Challenge" data-en="Beta Challenge">Beta Challenge</h3>
+      <p data-tr="Çizili problemde sıradaki tutuşu bul; yanlış hamle düşüş demek." data-en="Find the next hold on the sketched line; a wrong call means a fall.">Çizili problemde sıradaki tutuşu bul; yanlış hamle 2 saniyelik düşüş demek.</p>
+      <span class="go" data-tr="Rotayı Çöz" data-en="Send the Route">Rotayı Çöz</span>
     </a>
     <a class="acard reveal" href="guide/#games">
       <span class="num">22</span>
-      <h3>Mini Oyunlar</h3>
-      <p>Düğümü süreye karşı kur, kartları çevirip ekipmanı ezberle.</p>
-      <span class="go">Oyna</span>
+      <h3 data-tr="Mini Oyunlar" data-en="Mini Games">Mini Oyunlar</h3>
+      <p data-tr="Altı düğümü süreye karşı ör, kartları çevirip ekipmanı fotoğraflarından tanı." data-en="Tie six knots against the clock, flip cards to recognize gear from photos.">Düğümü süreye karşı kur, kartları çevirip ekipmanı ezberle.</p>
+      <span class="go" data-tr="Oyna" data-en="Play">Oyna</span>
     </a>
   </div>
 </section>
@@ -558,6 +567,24 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
       setTimeout(() => b.classList.remove('snap'), 550);
     });
   });
+
+  /* arsenal tr/en switch */
+  const arsTr = $('#arsTr'), arsEn = $('#arsEn');
+  function setArsLang(l){
+    document.querySelectorAll('#arsenal [data-en]').forEach(el => {
+      el.innerHTML = l === 'en' ? el.dataset.en : el.dataset.tr;
+    });
+    arsTr.classList.toggle('on', l !== 'en');
+    arsEn.classList.toggle('on', l === 'en');
+    try { localStorage.setItem('alta-ars-lang', l); } catch(e){}
+  }
+  if (arsTr && arsEn) {
+    let saved = null;
+    try { saved = localStorage.getItem('alta-ars-lang'); } catch(e){}
+    if (saved === 'en') setArsLang('en');
+    arsTr.addEventListener('click', () => setArsLang('tr'));
+    arsEn.addEventListener('click', () => setArsLang('en'));
+  }
 
   /* headlamp mode */
   const root = document.documentElement, lampBtn = $('#lampBtn');
