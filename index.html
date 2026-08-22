@@ -178,10 +178,13 @@ html[data-theme="light"] .cbtn.snap{color:var(--bg);}
   display:flex;flex-direction:column;transition:transform .35s ease,border-color .35s;
 }
 .ccard:hover{transform:translateY(-6px);border-color:var(--ice);}
-.cart{height:170px;position:relative;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,var(--navy) 0%,color-mix(in srgb,var(--bg) 55%,var(--navy)) 100%);}
+.cart{height:190px;position:relative;overflow:hidden;background:var(--panel);border-bottom:1px solid var(--line);}
+.cart img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.85) contrast(1.05);transition:transform .6s ease,filter .4s ease;}
+.ccard:hover .cart img{transform:scale(1.06);filter:saturate(1.08) contrast(1.08);}
+.cart::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,17,21,.18),transparent 40%,rgba(15,17,21,.34));pointer-events:none;}
 .cart svg{width:74px;height:74px;stroke:var(--ice);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s ease;}
 .ccard:hover .cart svg{transform:scale(1.12) rotate(-3deg);}
-.cart .idx{position:absolute;top:12px;left:14px;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:color-mix(in srgb,var(--ice) 80%,transparent);}
+.cart .idx{position:absolute;top:12px;left:14px;z-index:1;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:#F7F5EF;background:rgba(15,17,21,.68);padding:.3rem .55rem;border-radius:3px;}
 .cbody{padding:22px 22px 26px;display:flex;flex-direction:column;gap:10px;flex:1;}
 .cbody h3{font-size:1.06rem;font-weight:800;letter-spacing:-.01em;text-transform:uppercase;}
 .cbody p{color:var(--dim);line-height:1.65;font-size:.85rem;}
@@ -351,7 +354,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     <article class="ccard">
       <div class="cart">
         <span class="idx">01</span>
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 42V30c0-4 3-7 7-7h24l9 9h6c2 0 4 2 4 4v6"/><path d="M8 42h48M14 42v5m36-5v5"/><circle cx="19" cy="47" r="4.5"/><circle cx="46" cy="47" r="4.5"/><rect x="20" y="29" width="9" height="6" rx="1"/></svg>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Alex%20Honnold%202015.jpg?width=900" alt="Alex Honnold" loading="lazy">
       </div>
       <div class="cbody">
         <h3>Karavan Hayatı</h3>
@@ -362,7 +365,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     <article class="ccard">
       <div class="cart">
         <span class="idx">02</span>
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M26 54V40h12v14M22 40V28h20v12M18 28V18h28v10M14 18V10h36v8M28 54h8M32 22v-4"/></svg>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Taipei101.Taipei.jpg?width=900" alt="Taipei 101" loading="lazy">
       </div>
       <div class="cbody">
         <h3>Taipei 101 Çılgınlığı</h3>
@@ -373,7 +376,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     <article class="ccard">
       <div class="cart">
         <span class="idx">03</span>
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 26c-4-5-10-8-14-6 2 4 4 8 8 10m6-4c4-5 10-8 14-6-2 4-4 8-8 10m-6 0c-1.5 0-3 .3-4 1l4 13 4-13c-1-.7-2.5-1-4-1z"/><path d="M26 30c2 1.5 4 2.5 6 2.5s4-1 6-2.5"/></svg>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The%20Matterhorn%20by%20Edward%20Theodore%20Compton.jpg?width=900" alt="Victorian alpinism — Matterhorn" loading="lazy">
       </div>
       <div class="cbody">
         <h3>Kravatla Tırmanış</h3>
@@ -385,7 +388,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     <article class="ccard">
       <div class="cart">
         <span class="idx">04</span>
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 56V10M50 56V10"/><path d="M32 12l-5 12 6 10-5 12 6 10"/></svg>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/El%20Capitan%20and%20Merced%20River.jpg?width=900" alt="El Capitan — The Nose" loading="lazy">
       </div>
       <div class="cbody">
         <h3>47 Günde El Capitan</h3>
@@ -396,7 +399,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     <article class="ccard">
       <div class="cart">
         <span class="idx">05</span>
-        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="19" width="44" height="27" rx="3"/><path d="M16 40l4-6 4 6M40 40l4-6 4 6"/><circle cx="23" cy="32" r="3.2"/><circle cx="41" cy="32" r="3.2"/></svg>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/TDK%20VHS%20cassette%20tape%2020121220.jpg?width=900" alt="VHS beta tapes" loading="lazy">
       </div>
       <div class="cbody">
         <h3>“Beta” Kelimesinin Doğuşu</h3>
@@ -407,7 +410,7 @@ html.vt::view-transition-new(root){animation:lampOn .6s ease-out;}
     <article class="ccard">
       <div class="cart">
         <span class="idx">06</span>
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 12c-9.5 0-17 6.5-17 15.5S22.5 43 32 43s17-6.5 17-15.5c0-6-3.6-11-9-13.5"/><path d="M32 22c-4.2 0-7.5 2.6-7.5 6s3.3 6 7.5 6 7.5-2.6 7.5-6-3.3-6-7.5-6z"/><path d="M26 46l-5 8M38 46l5 8"/></svg>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Lynn%20hill%202006%20cropped.jpg?width=900" alt="Lynn Hill" loading="lazy">
       </div>
       <div class="cbody">
         <h3>“It Goes, Boys!”</h3>
